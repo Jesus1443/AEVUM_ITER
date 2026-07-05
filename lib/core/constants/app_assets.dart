@@ -2,12 +2,23 @@ class AppAssets {
   AppAssets._();
 
   // Logos
-  static const logo = 'assets/logos/logo.png';
-  static const tecnmLogo = 'assets/logos/tecnm.png';
+  static const String logo = 'assets/logos/logo.png';
+  static const String tecnmLogo = 'assets/logos/tecnm.png';
 
   // Splash
-  static const splashLogo = logo;
+  static const String splashLogo = logo;
 
-  // Placeholder
-  static const placeholderAvatar = 'assets/avatars/avatar_placeholder.png';
+  // Onboarding
+  static const String onboarding1 =
+      'assets/illustrations/onboarding_1.png';
+
+  static const String onboarding2 =
+      'assets/illustrations/onboarding_2.png';
+
+  static const String onboarding3 =
+      'assets/illustrations/onboarding_3.png';
+
+  // Avatar
+  static const String placeholderAvatar =
+      'assets/avatars/avatar_placeholder.png';
 }

@@ -6,7 +6,6 @@ import 'package:go_router/go_router.dart';
 import '../../../../app/routes/app_routes.dart';
 import '../../../../app/theme/app_colors.dart';
 import '../../../../core/constants/app_assets.dart';
-import '../../../../core/constants/app_sizes.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -28,66 +27,85 @@ class _SplashPageState extends State<SplashPage> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.sizeOf(context).width;
+
     return Scaffold(
       backgroundColor: AppColors.backgroundLight,
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(AppSizes.lg),
-          child: Column(
-            children: [
-              const Spacer(),
-
-              Image.asset(
-                AppAssets.logo,
-                width: 180,
-                fit: BoxFit.contain,
+        child: Stack(
+          children: [
+            Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Image.asset(
+                    AppAssets.logo,
+                    width: screenWidth * 0.45,
+                    fit: BoxFit.contain,
+                  ),
+                  const SizedBox(height: 32),
+                  const Text(
+                    'Aevum Iter',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 52,
+                      fontWeight: FontWeight.w900,
+                      height: 1,
+                      color: AppColors.primaryDark,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  const Text(
+                    'DESCUBRE TU CAMINO',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 18,
+                      letterSpacing: 1.4,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.textMuted,
+                    ),
+                  ),
+                  const SizedBox(height: 80),
+                  const SizedBox(
+                    width: 42,
+                    height: 42,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 4,
+                      color: AppColors.primary,
+                    ),
+                  ),
+                ],
               ),
+            ),
 
-              const SizedBox(height: AppSizes.md),
-
-              const Text(
-                'Descubre tu camino',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.primaryDark,
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 28),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Image.asset(
+                      AppAssets.tecnmLogo,
+                      width: screenWidth * 0.26,
+                      fit: BoxFit.contain,
+                    ),
+                    const SizedBox(height: 12),
+                    const Text(
+                      'TECNM TUXTEPEC',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 1.2,
+                        color: AppColors.textMuted,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-
-              const SizedBox(height: AppSizes.xl),
-
-              const SizedBox(
-                width: 34,
-                height: 34,
-                child: CircularProgressIndicator(
-                  strokeWidth: 3,
-                  color: AppColors.primary,
-                ),
-              ),
-
-              const Spacer(),
-
-              Image.asset(
-                AppAssets.tecnmLogo,
-                width: 120,
-                fit: BoxFit.contain,
-              ),
-
-              const SizedBox(height: AppSizes.sm),
-
-              const Text(
-                'TecNM Campus Tuxtepec',
-                style: TextStyle(
-                  fontSize: 13,
-                  color: AppColors.textMuted,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-
-              const SizedBox(height: AppSizes.md),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
