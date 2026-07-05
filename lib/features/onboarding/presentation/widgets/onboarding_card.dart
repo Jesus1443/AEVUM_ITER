@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 
 import '../../../../app/theme/app_colors.dart';
-import '../../../../core/constants/app_sizes.dart';
+import '../../../../core/constants/app_spacing.dart';
 import '../../domain/entities/onboarding_item.dart';
 
 class OnboardingCard extends StatelessWidget {
   const OnboardingCard({
-    super.key,
-    required this.item,
+    required this.item, super.key,
   });
 
   final OnboardingItem item;
@@ -17,7 +16,7 @@ class OnboardingCard extends StatelessWidget {
     final screenHeight = MediaQuery.sizeOf(context).height;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppSizes.lg),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -26,7 +25,7 @@ class OnboardingCard extends StatelessWidget {
             height: screenHeight * 0.34,
             fit: BoxFit.contain,
           ),
-          const SizedBox(height: AppSizes.xl),
+          const SizedBox(height: AppSpacing.xl),
           Text(
             item.title,
             textAlign: TextAlign.center,
@@ -36,7 +35,7 @@ class OnboardingCard extends StatelessWidget {
               color: AppColors.primaryDark,
             ),
           ),
-          const SizedBox(height: AppSizes.md),
+          const SizedBox(height: AppSpacing.md),
           Text(
             item.description,
             textAlign: TextAlign.center,

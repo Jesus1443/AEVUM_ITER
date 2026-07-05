@@ -12,4 +12,5 @@ class AppRoutes {
   static const String results = '/results';
   static const String profile = '/profile';
   static const String settings = '/settings';
+  
 }

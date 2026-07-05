@@ -21,4 +21,17 @@ class AppAssets {
   // Avatar
   static const String placeholderAvatar =
       'assets/avatars/avatar_placeholder.png';
+
+  // Avatar base
+  static const String explorerAvatar =
+      'assets/avatars/explorer.png';
+
+  static const String scientistAvatar =
+      'assets/avatars/scientist.png';
+
+  static const String artistAvatar =
+      'assets/avatars/artist.png';
+
+  static const String leaderAvatar =
+      'assets/avatars/leader.png';
 }

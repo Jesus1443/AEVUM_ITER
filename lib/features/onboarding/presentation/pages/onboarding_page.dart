@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../app/routes/app_routes.dart';
 import '../../../../app/theme/app_colors.dart';
 import '../../../../core/constants/app_assets.dart';
-import '../../../../core/constants/app_sizes.dart';
+import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/widgets/primary_button.dart';
 import '../../data/onboarding_data.dart';
 import '../providers/onboarding_provider.dart';
@@ -64,7 +64,7 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
       backgroundColor: AppColors.backgroundLight,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(AppSizes.lg),
+          padding: const EdgeInsets.all(AppSpacing.lg),
           child: Column(
             children: [
               Row(
@@ -110,7 +110,7 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
                 totalPages: OnboardingData.items.length,
               ),
 
-              const SizedBox(height: AppSizes.lg),
+              const SizedBox(height: AppSpacing.lg),
 
               PrimaryButton(
                 text: isLastPage ? 'Comenzar' : 'Siguiente',
@@ -120,7 +120,7 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
                 onPressed: _nextPage,
               ),
 
-              const SizedBox(height: AppSizes.md),
+              const SizedBox(height: AppSpacing.md),
             ],
           ),
         ),

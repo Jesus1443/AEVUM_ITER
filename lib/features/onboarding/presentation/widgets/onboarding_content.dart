@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 
 import '../../../../app/theme/app_colors.dart';
-import '../../../../core/constants/app_sizes.dart';
+import '../../../../core/constants/app_spacing.dart';
 
 class OnboardingContent extends StatelessWidget {
   const OnboardingContent({
-    super.key,
-    required this.icon,
-    required this.title,
-    required this.description,
+    required this.icon, required this.title, required this.description, super.key,
   });
 
   final IconData icon;
@@ -18,7 +15,7 @@ class OnboardingContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(AppSizes.lg),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -27,7 +24,7 @@ class OnboardingContent extends StatelessWidget {
             size: 120,
             color: AppColors.primary,
           ),
-          const SizedBox(height: AppSizes.xl),
+          const SizedBox(height: AppSpacing.xl),
           Text(
             title,
             textAlign: TextAlign.center,
@@ -37,7 +34,7 @@ class OnboardingContent extends StatelessWidget {
               color: AppColors.primaryDark,
             ),
           ),
-          const SizedBox(height: AppSizes.md),
+          const SizedBox(height: AppSpacing.md),
           Text(
             description,
             textAlign: TextAlign.center,

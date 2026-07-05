@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 
 import '../../app/theme/app_colors.dart';
-import '../constants/app_sizes.dart';
+import '../constants/app_radius.dart';
+import '../constants/app_spacing.dart';
 
 class SecondaryButton extends StatelessWidget {
   const SecondaryButton({
-    super.key,
-    required this.text,
-    required this.onPressed,
+    required this.text, required this.onPressed, super.key,
     this.icon,
   });
 
@@ -19,14 +18,16 @@ class SecondaryButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      height: AppSizes.buttonHeight,
+      height: 56,
       child: OutlinedButton.icon(
         onPressed: onPressed,
-        icon: icon != null ? Icon(icon) : const SizedBox.shrink(),
+        icon: Icon(
+          icon ?? Icons.arrow_forward_rounded,
+        ),
         label: Text(
           text,
           style: const TextStyle(
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.w700,
             fontSize: 16,
           ),
         ),
@@ -37,7 +38,10 @@ class SecondaryButton extends StatelessWidget {
             width: 2,
           ),
           shape: RoundedRectangleBorder(
-            borderRadius: AppSizes.borderRadiusMedium,
+            borderRadius: BorderRadius.circular(AppRadius.md),
+          ),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.lg,
           ),
         ),
       ),

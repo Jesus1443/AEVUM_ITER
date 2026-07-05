@@ -4,9 +4,7 @@ import '../../../../app/theme/app_colors.dart';
 
 class PageIndicator extends StatelessWidget {
   const PageIndicator({
-    super.key,
-    required this.currentIndex,
-    required this.totalPages,
+    required this.currentIndex, required this.totalPages, super.key,
   });
 
   final int currentIndex;
