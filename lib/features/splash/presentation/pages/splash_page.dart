@@ -1,28 +1,42 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../app/routes/app_routes.dart';
 import '../../../../app/theme/app_colors.dart';
 import '../../../../core/constants/app_assets.dart';
+import '../../../profile/presentation/providers/user_profile_provider.dart';
 
-class SplashPage extends StatefulWidget {
+class SplashPage extends ConsumerStatefulWidget {
   const SplashPage({super.key});
 
   @override
-  State<SplashPage> createState() => _SplashPageState();
+  ConsumerState<SplashPage> createState() => _SplashPageState();
 }
 
-class _SplashPageState extends State<SplashPage> {
+class _SplashPageState extends ConsumerState<SplashPage> {
   @override
   void initState() {
     super.initState();
+    _validateSession();
+  }
 
-    Timer(const Duration(seconds: 3), () {
-      if (!mounted) return;
+  Future<void> _validateSession() async {
+    await Future<void>.delayed(const Duration(seconds: 3));
+
+    await ref.read(userProfileProvider.notifier).loadProfile();
+
+    if (!mounted) return;
+
+    final profile = ref.read(userProfileProvider);
+
+    if (profile == null) {
       context.go(AppRoutes.onboarding);
-    });
+    } else {
+      context.go(AppRoutes.path);
+    }
   }
 
   @override
@@ -77,7 +91,6 @@ class _SplashPageState extends State<SplashPage> {
                 ],
               ),
             ),
-
             Align(
               alignment: Alignment.bottomCenter,
               child: Padding(

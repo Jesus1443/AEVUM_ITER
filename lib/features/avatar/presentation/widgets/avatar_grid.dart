@@ -6,7 +6,10 @@ import 'avatar_card.dart';
 
 class AvatarGrid extends StatelessWidget {
   const AvatarGrid({
-    required this.avatars, required this.selectedAvatar, required this.onSelected, super.key,
+    required this.avatars,
+    required this.selectedAvatar,
+    required this.onSelected,
+    super.key,
   });
 
   final List<Avatar> avatars;
@@ -15,19 +18,24 @@ class AvatarGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Wrap(
-        spacing: AppSpacing.lg,
-        runSpacing: AppSpacing.lg,
-        alignment: WrapAlignment.center,
-        children: avatars.map((avatar) {
-          return AvatarCard(
-            avatar: avatar,
-            isSelected: selectedAvatar?.id == avatar.id,
-            onTap: () => onSelected(avatar),
-          );
-        }).toList(),
+    return GridView.builder(
+      padding: const EdgeInsets.only(bottom: AppSpacing.lg),
+      itemCount: avatars.length,
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 3,
+        crossAxisSpacing: AppSpacing.lg,
+        mainAxisSpacing: AppSpacing.lg,
+        childAspectRatio: 1,
       ),
+      itemBuilder: (context, index) {
+        final avatar = avatars[index];
+
+        return AvatarCard(
+          avatar: avatar,
+          isSelected: selectedAvatar?.id == avatar.id,
+          onTap: () => onSelected(avatar),
+        );
+      },
     );
   }
 }

@@ -20,66 +20,66 @@ class AvatarCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedContainer(
+    return AnimatedScale(
       duration: AppDuration.normal,
-      curve: Curves.easeOut,
-      width: 150,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(AppRadius.xl),
-        border: Border.all(
-          color: isSelected
-              ? AppColors.primary
-              : Colors.transparent,
-          width: 3,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.08),
-            blurRadius: 18,
-            offset: const Offset(0, 8),
-          ),
-        ],
-      ),
+      scale: isSelected ? 1.03 : 1,
       child: Material(
         color: Colors.transparent,
         child: InkWell(
           onTap: onTap,
           borderRadius: BorderRadius.circular(AppRadius.xl),
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.md),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                AnimatedScale(
-                  duration: AppDuration.normal,
-                  curve: Curves.easeOut,
-                  scale: isSelected ? 1.08 : 1,
-                  child: Hero(
-                    tag: avatar.id,
-                    child: Image.asset(
-                      avatar.baseAvatarImage,
-                      height: 120,
-                      fit: BoxFit.contain,
+          child: Stack(
+            children: [
+              AnimatedContainer(
+                duration: AppDuration.normal,
+                padding: const EdgeInsets.all(AppSpacing.sm),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(AppRadius.xl),
+                  border: Border.all(
+                    color: isSelected
+                        ? AppColors.primary
+                        : Colors.transparent,
+                    width: 3,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.08),
+                      blurRadius: 16,
+                      offset: const Offset(0, 8),
+                    ),
+                  ],
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(AppRadius.lg),
+                  child: Image.asset(
+                    avatar.image,
+                    fit: BoxFit.cover,
+                    width: double.infinity,
+                    height: double.infinity,
+                  ),
+                ),
+              ),
+
+              if (isSelected)
+                Positioned(
+                  top: 8,
+                  right: 8,
+                  child: Container(
+                    width: 34,
+                    height: 34,
+                    decoration: const BoxDecoration(
+                      color: AppColors.primary,
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.check,
+                      color: Colors.white,
+                      size: 20,
                     ),
                   ),
                 ),
-
-                const SizedBox(height: AppSpacing.md),
-
-                Text(
-                  avatar.name,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
-                    color: isSelected
-                        ? AppColors.primary
-                        : AppColors.primaryDark,
-                  ),
-                ),
-              ],
-            ),
+            ],
           ),
         ),
       ),

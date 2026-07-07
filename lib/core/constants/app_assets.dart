@@ -34,4 +34,12 @@ class AppAssets {
 
   static const String leaderAvatar =
       'assets/avatars/leader.png';
+  
+  // Avatars
+  static const String avatar01 = 'assets/avatars/avatar_01.png';
+  static const String avatar02 = 'assets/avatars/avatar_02.png';
+  static const String avatar03 = 'assets/avatars/avatar_03.png';
+  static const String avatar04 = 'assets/avatars/avatar_04.png';
+  static const String avatar05 = 'assets/avatars/avatar_05.png';
+  static const String avatar06 = 'assets/avatars/avatar_06.png';
 }

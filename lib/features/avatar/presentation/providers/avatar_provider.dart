@@ -1,28 +1,32 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../data/avatar_repository.dart';
 import '../../domain/entities/avatar.dart';
-import 'avatar_state.dart';
 
-final avatarProvider =
-    NotifierProvider<AvatarNotifier, AvatarState>(
+final avatarRepositoryProvider = Provider<AvatarRepository>(
+  (ref) => const AvatarRepository(),
+);
+
+final avatarProvider = NotifierProvider<AvatarNotifier, Avatar?>(
   AvatarNotifier.new,
 );
 
-class AvatarNotifier extends Notifier<AvatarState> {
+class AvatarNotifier extends Notifier<Avatar?> {
+  late final AvatarRepository _repository;
+
   @override
-  AvatarState build() {
-    return const AvatarState();
+  Avatar? build() {
+    _repository = ref.read(avatarRepositoryProvider);
+    return null;
   }
 
+  List<Avatar> get avatars => _repository.getAll();
+
   void selectAvatar(Avatar avatar) {
-    state = state.copyWith(
-      selectedAvatar: avatar,
-    );
+    state = avatar;
   }
 
   void clearSelection() {
-    state = state.copyWith(
-      clearSelection: true,
-    );
+    state = null;
   }
 }

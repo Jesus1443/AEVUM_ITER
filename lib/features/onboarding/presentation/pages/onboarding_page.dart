@@ -4,8 +4,9 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../app/routes/app_routes.dart';
 import '../../../../app/theme/app_colors.dart';
-import '../../../../core/constants/app_assets.dart';
+import '../../../../core/constants/app_duration.dart';
 import '../../../../core/constants/app_spacing.dart';
+import '../../../../core/widgets/app_top_bar.dart';
 import '../../../../core/widgets/primary_button.dart';
 import '../../data/onboarding_data.dart';
 import '../providers/onboarding_provider.dart';
@@ -37,8 +38,18 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
   }
 
   void _goToAvatarSelection() {
-    ref.read(onboardingPageProvider.notifier).reset();
-    context.go(AppRoutes.avatarSelection);
+    context.push(AppRoutes.avatarSelection);
+  }
+
+  void _previousPage() {
+    final currentPage = ref.read(onboardingPageProvider);
+
+    if (currentPage == 0) return;
+
+    _pageController.previousPage(
+      duration: AppDuration.normal,
+      curve: Curves.easeOut,
+    );
   }
 
   void _nextPage() {
@@ -50,7 +61,7 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
     }
 
     _pageController.nextPage(
-      duration: const Duration(milliseconds: 300),
+      duration: AppDuration.normal,
       curve: Curves.easeOut,
     );
   }
@@ -69,10 +80,9 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
             children: [
               Row(
                 children: [
-                  Image.asset(
-                    AppAssets.logo,
-                    width: 72,
-                    fit: BoxFit.contain,
+                  AppTopBar(
+                    showBackButton: currentPage > 0,
+                    onBack: _previousPage,
                   ),
                   const Spacer(),
                   TextButton(
@@ -80,14 +90,14 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
                     child: const Text(
                       'Saltar',
                       style: TextStyle(
-                        fontWeight: FontWeight.w700,
+                        //fontSize: 18,
+                        fontWeight: FontWeight.w800,
                         color: AppColors.primaryDark,
                       ),
                     ),
                   ),
                 ],
               ),
-
               Expanded(
                 child: PageView.builder(
                   controller: _pageController,
@@ -104,14 +114,11 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
                   },
                 ),
               ),
-
               PageIndicator(
                 currentIndex: currentPage,
                 totalPages: OnboardingData.items.length,
               ),
-
               const SizedBox(height: AppSpacing.lg),
-
               PrimaryButton(
                 text: isLastPage ? 'Comenzar' : 'Siguiente',
                 icon: isLastPage
@@ -119,7 +126,6 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
                     : Icons.arrow_forward_rounded,
                 onPressed: _nextPage,
               ),
-
               const SizedBox(height: AppSpacing.md),
             ],
           ),
