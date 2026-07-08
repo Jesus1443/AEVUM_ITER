@@ -21,8 +21,9 @@ class AvatarCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AnimatedScale(
-      duration: AppDuration.normal,
-      scale: isSelected ? 1.03 : 1,
+      duration: const Duration(milliseconds: 220),
+      curve: Curves.easeOutBack,
+      scale: isSelected ? 1.06 : 1,
       child: Material(
         color: Colors.transparent,
         child: InkWell(
@@ -44,8 +45,10 @@ class AvatarCard extends StatelessWidget {
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.08),
-                      blurRadius: 16,
+                      color: AppColors.primary.withValues(
+                        alpha: isSelected ? 0.25 : 0.08,
+                      ),
+                      blurRadius: isSelected ? 24 : 16,
                       offset: const Offset(0, 8),
                     ),
                   ],

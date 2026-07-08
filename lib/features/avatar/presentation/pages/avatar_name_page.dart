@@ -20,6 +20,22 @@ class AvatarNamePage extends ConsumerStatefulWidget {
 
 class _AvatarNamePageState extends ConsumerState<AvatarNamePage> {
   final TextEditingController _nameController = TextEditingController();
+  bool _hasName = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _nameController.addListener(() {
+      final hasName = _nameController.text.trim().isNotEmpty;
+
+      if (hasName != _hasName) {
+        setState(() {
+          _hasName = hasName;
+        });
+      }
+    });
+  }
 
   @override
   void dispose() {
@@ -163,32 +179,22 @@ class _AvatarNamePageState extends ConsumerState<AvatarNamePage> {
                   PrimaryButton(
                     text: '¡Empezar test!',
                     icon: Icons.arrow_forward_rounded,
-                    onPressed: () async {
-                      final name = _nameController.text.trim();
+                    onPressed: _hasName
+                        ? () async {
+                            final name = _nameController.text.trim();
 
-                      if (name.isEmpty) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content:
-                                Text('Escribe tu nombre para continuar'),
-                          ),
-                        );
-                        return;
-                      }
+                            await ref.read(userProfileProvider.notifier).saveProfile(
+                                  UserProfile(
+                                    name: name,
+                                    avatarId: avatar.id,
+                                  ),
+                                );
 
-                      await ref
-                          .read(userProfileProvider.notifier)
-                          .saveProfile(
-                            UserProfile(
-                              name: name,
-                              avatarId: avatar.id,
-                            ),
-                          );
+                            if (!context.mounted) return;
 
-                      if (!context.mounted) return;
-
-                      context.go(AppRoutes.path);
-                    },
+                            context.go(AppRoutes.path);
+                          }
+                        : null,
                   ),
 
                   const SizedBox(height: AppSpacing.lg),

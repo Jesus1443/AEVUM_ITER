@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../features/path/presentation/pages/path_page.dart';
 import '../../features/avatar/presentation/pages/avatar_selection_page.dart';
 import '../../features/avatar/presentation/pages/avatar_name_page.dart';
 import '../../features/onboarding/presentation/pages/onboarding_page.dart';
@@ -31,11 +31,7 @@ class AppRouter {
       ),
       GoRoute(
         path: AppRoutes.path,
-        builder: (context, state) => const Scaffold(
-          body: Center(
-            child: Text('Path'),
-          ),
-        ),
+        builder: (context, state) => const PathPage(),
       ),
     ],
   );

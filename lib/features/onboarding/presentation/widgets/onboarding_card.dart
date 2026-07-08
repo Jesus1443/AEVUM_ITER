@@ -6,7 +6,8 @@ import '../../domain/entities/onboarding_item.dart';
 
 class OnboardingCard extends StatelessWidget {
   const OnboardingCard({
-    required this.item, super.key,
+    required this.item,
+    super.key,
   });
 
   final OnboardingItem item;
@@ -16,13 +17,13 @@ class OnboardingCard extends StatelessWidget {
     final screenHeight = MediaQuery.sizeOf(context).height;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Image.asset(
             item.image,
-            height: screenHeight * 0.34,
+            height: screenHeight * 0.30,
             fit: BoxFit.contain,
           ),
           const SizedBox(height: AppSpacing.xl),
@@ -32,6 +33,7 @@ class OnboardingCard extends StatelessWidget {
             style: const TextStyle(
               fontSize: 30,
               fontWeight: FontWeight.w900,
+              height: 1.15,
               color: AppColors.primaryDark,
             ),
           ),
