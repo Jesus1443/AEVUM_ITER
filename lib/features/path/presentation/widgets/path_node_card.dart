@@ -33,8 +33,8 @@ class PathNodeCard extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Container(
-          width: 104,
-          height: 104,
+          width: 78,
+          height: 78,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: circleColor,
@@ -57,7 +57,7 @@ class PathNodeCard extends StatelessWidget {
           child: Icon(
             isCompleted ? Icons.check_rounded : node.icon,
             color: iconColor,
-            size: 42,
+            size: 32,
           ),
         ),
         const SizedBox(height: AppSpacing.sm),
@@ -65,7 +65,7 @@ class PathNodeCard extends StatelessWidget {
           node.title,
           textAlign: TextAlign.center,
           style: TextStyle(
-            fontSize: 21,
+            fontSize: 17,
             fontWeight: FontWeight.w900,
             color: isLocked ? Colors.grey : AppColors.textDark,
           ),
@@ -85,7 +85,7 @@ class PathNodeCard extends StatelessWidget {
           child: Text(
             statusText,
             style: TextStyle(
-              fontSize: 12,
+              fontSize: 10,
               letterSpacing: 1.3,
               fontWeight: FontWeight.w900,
               color: isLocked ? Colors.grey : AppColors.primaryDark,

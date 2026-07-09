@@ -51,7 +51,7 @@ class ProgressBar extends StatelessWidget {
               const Text(
                 'Tu viaje profesional\nestá despegando.',
                 style: TextStyle(
-                  fontSize: 28,
+                  fontSize: 22,
                   height: 1.15,
                   fontWeight: FontWeight.w900,
                   color: AppColors.textDark,
