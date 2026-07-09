@@ -1,5 +1,7 @@
+//import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../features/test/presentation/pages/test_page.dart';
 import '../../features/path/presentation/pages/path_page.dart';
 import '../../features/avatar/presentation/pages/avatar_selection_page.dart';
 import '../../features/avatar/presentation/pages/avatar_name_page.dart';
@@ -29,6 +31,10 @@ class AppRouter {
         path: AppRoutes.avatarName,
         builder: (context, state) => const AvatarNamePage(),
       ),
+      GoRoute(
+        path: AppRoutes.test,
+        builder: (context, state) => const TestPage(),
+        ),
       GoRoute(
         path: AppRoutes.path,
         builder: (context, state) => const PathPage(),

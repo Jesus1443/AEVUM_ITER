@@ -192,7 +192,7 @@ class _AvatarNamePageState extends ConsumerState<AvatarNamePage> {
 
                             if (!context.mounted) return;
 
-                            context.go(AppRoutes.path);
+                            context.go(AppRoutes.test);
                           }
                         : null,
                   ),
