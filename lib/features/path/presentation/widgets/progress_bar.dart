@@ -19,7 +19,7 @@ class ProgressBar extends StatelessWidget {
     final percentage = (progress * 100).round();
 
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      padding: const EdgeInsets.all(AppSpacing.sm),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(AppRadius.xl),
@@ -84,14 +84,6 @@ class ProgressBar extends StatelessWidget {
                     ),
                   ),
                 ],
-              ),
-              const SizedBox(height: AppSpacing.sm),
-              Text(
-                'Has completado $completedQuestions de 30 preguntas.',
-                style: const TextStyle(
-                  fontSize: 15,
-                  color: AppColors.textMuted,
-                ),
               ),
             ],
           ),

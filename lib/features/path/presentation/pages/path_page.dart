@@ -26,11 +26,11 @@ class PathPage extends ConsumerWidget {
         child: Column(
           children: [
             const ProgressHeader(),
-            const SizedBox(height: AppSpacing.md),
+            const SizedBox(height: AppSpacing.sm),
             ProgressBar(
               completedQuestions: completedQuestions,
             ),
-            const SizedBox(height: AppSpacing.lg),
+            const SizedBox(height: AppSpacing.sm),
             Expanded(
               child: PathTimeline(
                 nodes: const PathRepository().getNodes(),
@@ -52,7 +52,7 @@ class PathPage extends ConsumerWidget {
                 context.go(AppRoutes.test);
               },
             ),
-            const SizedBox(height: AppSpacing.md),
+            const SizedBox(height: AppSpacing.sm),
             Text(
               isFinished
                   ? 'Tu perfil vocacional está listo.'

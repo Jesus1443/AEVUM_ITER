@@ -20,7 +20,7 @@ class PathNodeCard extends StatelessWidget {
     final isCompleted = node.status == NodeStatus.completed;
     final isLocked = node.status == NodeStatus.locked;
 
-    final color = isLocked ? Colors.grey.shade300 : AppColors.accent;
+    final circleColor = isLocked ? Colors.grey.shade200 : AppColors.accent;
     final iconColor = isLocked ? Colors.grey : Colors.white;
 
     final statusText = isCompleted
@@ -29,24 +29,27 @@ class PathNodeCard extends StatelessWidget {
             ? 'EN CURSO'
             : 'BLOQUEADO';
 
-    return Row(
+    return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
         Container(
-          width: 94,
-          height: 94,
+          width: 104,
+          height: 104,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: color,
+            color: circleColor,
             border: Border.all(
               color: isLocked
-                  ? Colors.grey.shade200
-                  : AppColors.accent.withValues(alpha: .30),
+                  ? Colors.grey.shade300
+                  : AppColors.accent.withValues(alpha: .25),
               width: 6,
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: isAvailable ? .16 : .08),
-                blurRadius: isAvailable ? 18 : 8,
+                color: isAvailable
+                    ? AppColors.accent.withValues(alpha: .35)
+                    : Colors.black.withValues(alpha: .08),
+                blurRadius: isAvailable ? 24 : 10,
                 offset: const Offset(0, 8),
               ),
             ],
@@ -54,53 +57,39 @@ class PathNodeCard extends StatelessWidget {
           child: Icon(
             isCompleted ? Icons.check_rounded : node.icon,
             color: iconColor,
-            size: 36,
+            size: 42,
           ),
         ),
-        const SizedBox(width: AppSpacing.lg),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                node.title,
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w900,
-                  color: isLocked ? Colors.grey : AppColors.textDark,
-                ),
-              ),
-              const SizedBox(height: AppSpacing.xs),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.md,
-                  vertical: AppSpacing.xs,
-                ),
-                decoration: BoxDecoration(
-                  color: isLocked
-                      ? Colors.grey.shade200
-                      : AppColors.accent.withValues(alpha: .90),
-                  borderRadius: BorderRadius.circular(AppRadius.circular),
-                ),
-                child: Text(
-                  statusText,
-                  style: TextStyle(
-                    fontSize: 12,
-                    letterSpacing: 1.4,
-                    fontWeight: FontWeight.w900,
-                    color: isLocked ? Colors.grey : AppColors.primaryDark,
-                  ),
-                ),
-              ),
-              const SizedBox(height: AppSpacing.sm),
-              Text(
-                node.description,
-                style: const TextStyle(
-                  fontSize: 15,
-                  color: AppColors.textMuted,
-                ),
-              ),
-            ],
+        const SizedBox(height: AppSpacing.sm),
+        Text(
+          node.title,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 21,
+            fontWeight: FontWeight.w900,
+            color: isLocked ? Colors.grey : AppColors.textDark,
+          ),
+        ),
+        const SizedBox(height: AppSpacing.xs),
+        Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.md,
+            vertical: 4,
+          ),
+          decoration: BoxDecoration(
+            color: isLocked
+                ? Colors.grey.shade200
+                : AppColors.accent.withValues(alpha: .95),
+            borderRadius: BorderRadius.circular(AppRadius.circular),
+          ),
+          child: Text(
+            statusText,
+            style: TextStyle(
+              fontSize: 12,
+              letterSpacing: 1.3,
+              fontWeight: FontWeight.w900,
+              color: isLocked ? Colors.grey : AppColors.primaryDark,
+            ),
           ),
         ),
       ],

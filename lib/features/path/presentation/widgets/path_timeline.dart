@@ -24,7 +24,7 @@ class PathTimeline extends StatelessWidget {
       physics: const BouncingScrollPhysics(),
       padding: const EdgeInsets.only(
         top: AppSpacing.xl,
-        bottom: AppSpacing.xxxl,
+        bottom: AppSpacing.xxl,
       ),
       itemCount: nodes.length,
       itemBuilder: (context, index) {
@@ -33,6 +33,7 @@ class PathTimeline extends StatelessWidget {
         );
 
         final showConnector = index < nodes.length - 1;
+        final connectorActive = index < completedBlocks;
 
         return Column(
           children: [
@@ -40,15 +41,12 @@ class PathTimeline extends StatelessWidget {
             if (showConnector)
               Container(
                 width: 8,
-                height: 70,
-                margin: const EdgeInsets.only(
-                  left: 43,
-                  top: AppSpacing.sm,
-                  bottom: AppSpacing.sm,
+                height: 72,
+                margin: const EdgeInsets.symmetric(
+                  vertical: AppSpacing.sm,
                 ),
-                alignment: Alignment.centerLeft,
                 decoration: BoxDecoration(
-                  color: index < completedBlocks
+                  color: connectorActive
                       ? AppColors.accent
                       : Colors.grey.shade300,
                   borderRadius: BorderRadius.circular(999),
