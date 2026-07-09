@@ -7,7 +7,7 @@ class AppRoutes {
   static const String avatarName = '/avatar-name';
   static const String path = '/path';
   static const String test = '/test';
-  static const String results = '/results';
+  static const String result = '/result';
   static const String profile = '/profile';
   static const String settings = '/settings';
 }

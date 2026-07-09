@@ -1,6 +1,7 @@
 //import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../features/result/presentation/pages/result_page.dart';
 import '../../features/test/presentation/pages/test_page.dart';
 import '../../features/path/presentation/pages/path_page.dart';
 import '../../features/avatar/presentation/pages/avatar_selection_page.dart';
@@ -38,6 +39,10 @@ class AppRouter {
       GoRoute(
         path: AppRoutes.path,
         builder: (context, state) => const PathPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.result,
+        builder: (context, state) => const ResultPage(),
       ),
     ],
   );

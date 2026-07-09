@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../app/theme/app_colors.dart';
-import '../../../../core/constants/app_duration.dart';
+import '../../../../core/constants/app_radius.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../domain/entities/path_node.dart';
 import '../../domain/enums/node_status.dart';
@@ -10,119 +10,100 @@ class PathNodeCard extends StatelessWidget {
   const PathNodeCard({
     required this.node,
     super.key,
-    this.onTap,
   });
 
   final PathNode node;
-  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     final isAvailable = node.status == NodeStatus.available;
     final isCompleted = node.status == NodeStatus.completed;
+    final isLocked = node.status == NodeStatus.locked;
 
-    Color backgroundColor;
-    Color borderColor;
-    Widget topIcon;
+    final color = isLocked ? Colors.grey.shade300 : AppColors.accent;
+    final iconColor = isLocked ? Colors.grey : Colors.white;
 
-    switch (node.status) {
-      case NodeStatus.completed:
-        backgroundColor = AppColors.primary;
-        borderColor = AppColors.primary;
-        topIcon = const Icon(
-          Icons.check_circle,
-          color: AppColors.primary,
-          size: 24,
-        );
-        break;
+    final statusText = isCompleted
+        ? 'COMPLETADO'
+        : isAvailable
+            ? 'EN CURSO'
+            : 'BLOQUEADO';
 
-      case NodeStatus.available:
-        backgroundColor = Colors.white;
-        borderColor = AppColors.primary;
-        topIcon = const Icon(
-          Icons.play_circle_fill,
-          color: AppColors.primary,
-          size: 24,
-        );
-        break;
-
-      case NodeStatus.locked:
-        backgroundColor = Colors.grey.shade200;
-        borderColor = Colors.grey.shade300;
-        topIcon = const Icon(
-          Icons.lock,
-          color: Colors.grey,
-          size: 24,
-        );
-        break;
-    }
-
-    return GestureDetector(
-      onTap: isAvailable ? onTap : null,
-      child: AnimatedScale(
-        duration: AppDuration.normal,
-        curve: Curves.easeOutBack,
-        scale: isAvailable ? 1 : 0.95,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            topIcon,
-
-            const SizedBox(height: AppSpacing.xs),
-
-            AnimatedContainer(
-              duration: AppDuration.normal,
-              width: 72,
-              height: 72,
-              decoration: BoxDecoration(
-                color: backgroundColor,
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: borderColor,
-                  width: 3,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: isAvailable
-                        ? AppColors.primary.withValues(alpha: .18)
-                        : Colors.black.withValues(alpha: .05),
-                    blurRadius: 16,
-                    offset: const Offset(0, 6),
-                  ),
-                ],
-              ),
-              child: Icon(
-                node.icon,
-                color: isCompleted
-                    ? Colors.white
-                    : isAvailable
-                        ? AppColors.primary
-                        : Colors.grey,
-                size: 34,
-              ),
+    return Row(
+      children: [
+        Container(
+          width: 94,
+          height: 94,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: color,
+            border: Border.all(
+              color: isLocked
+                  ? Colors.grey.shade200
+                  : AppColors.accent.withValues(alpha: .30),
+              width: 6,
             ),
-
-            const SizedBox(height: AppSpacing.sm),
-
-            SizedBox(
-              width: 90,
-              child: Text(
-                node.title,
-                textAlign: TextAlign.center,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w700,
-                  color: isAvailable || isCompleted
-                      ? AppColors.primaryDark
-                      : Colors.grey,
-                ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: isAvailable ? .16 : .08),
+                blurRadius: isAvailable ? 18 : 8,
+                offset: const Offset(0, 8),
               ),
-            ),
-          ],
+            ],
+          ),
+          child: Icon(
+            isCompleted ? Icons.check_rounded : node.icon,
+            color: iconColor,
+            size: 36,
+          ),
         ),
-      ),
+        const SizedBox(width: AppSpacing.lg),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                node.title,
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w900,
+                  color: isLocked ? Colors.grey : AppColors.textDark,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.xs),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.md,
+                  vertical: AppSpacing.xs,
+                ),
+                decoration: BoxDecoration(
+                  color: isLocked
+                      ? Colors.grey.shade200
+                      : AppColors.accent.withValues(alpha: .90),
+                  borderRadius: BorderRadius.circular(AppRadius.circular),
+                ),
+                child: Text(
+                  statusText,
+                  style: TextStyle(
+                    fontSize: 12,
+                    letterSpacing: 1.4,
+                    fontWeight: FontWeight.w900,
+                    color: isLocked ? Colors.grey : AppColors.primaryDark,
+                  ),
+                ),
+              ),
+              const SizedBox(height: AppSpacing.sm),
+              Text(
+                node.description,
+                style: const TextStyle(
+                  fontSize: 15,
+                  color: AppColors.textMuted,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
