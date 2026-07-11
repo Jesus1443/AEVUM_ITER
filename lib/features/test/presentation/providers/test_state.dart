@@ -1,3 +1,4 @@
+import '../../../result/domain/entities/test_result.dart';
 import '../../domain/entities/test_question.dart';
 import '../../domain/enums/test_flow_status.dart';
 
@@ -8,6 +9,7 @@ class TestState {
     required this.answers,
     required this.currentValue,
     required this.status,
+    this.result,
   });
 
   final List<TestQuestion> questions;
@@ -15,14 +17,29 @@ class TestState {
   final List<double> answers;
   final double currentValue;
   final TestFlowStatus status;
+  final TestResult? result;
 
   TestQuestion get currentQuestion => questions[currentIndex];
 
-  double get progress => (currentIndex + 1) / questions.length;
+  int get answeredQuestions => answers.length;
 
-  bool get isBlockCompleted => status == TestFlowStatus.blockCompleted;
+  int get totalQuestions => questions.length;
 
-  bool get isFinished => status == TestFlowStatus.finished;
+  double get progress {
+    if (questions.isEmpty) return 0;
+
+    return answers.length / questions.length;
+  }
+
+  bool get isBlockCompleted {
+    return status == TestFlowStatus.blockCompleted;
+  }
+
+  bool get isFinished {
+    return status == TestFlowStatus.finished;
+  }
+
+  bool get hasResult => result != null;
 
   TestState copyWith({
     List<TestQuestion>? questions,
@@ -30,6 +47,8 @@ class TestState {
     List<double>? answers,
     double? currentValue,
     TestFlowStatus? status,
+    TestResult? result,
+    bool clearResult = false,
   }) {
     return TestState(
       questions: questions ?? this.questions,
@@ -37,6 +56,7 @@ class TestState {
       answers: answers ?? this.answers,
       currentValue: currentValue ?? this.currentValue,
       status: status ?? this.status,
+      result: clearResult ? null : result ?? this.result,
     );
   }
 }

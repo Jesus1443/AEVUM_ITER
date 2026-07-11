@@ -23,8 +23,8 @@ class PathTimeline extends StatelessWidget {
     return ListView.builder(
       physics: const BouncingScrollPhysics(),
       padding: const EdgeInsets.only(
-        top: AppSpacing.xl,
-        bottom: AppSpacing.xxl,
+        top: AppSpacing.md,
+        bottom: AppSpacing.lg,
       ),
       itemCount: nodes.length,
       itemBuilder: (context, index) {

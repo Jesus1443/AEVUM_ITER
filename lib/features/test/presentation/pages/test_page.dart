@@ -19,29 +19,39 @@ class TestPage extends ConsumerStatefulWidget {
 }
 
 class _TestPageState extends ConsumerState<TestPage> {
+  ProviderSubscription? _testSubscription;
+
   @override
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.listenManual(
-        testProvider,
-        (previous, next) {
-          switch (next.status) {
-            case TestFlowStatus.answering:
-              break;
+    _testSubscription = ref.listenManual(
+      testProvider,
+      (previous, next) {
+        if (!mounted || previous?.status == next.status) {
+          return;
+        }
 
-            case TestFlowStatus.blockCompleted:
-              context.go(AppRoutes.path);
-              break;
+        switch (next.status) {
+          case TestFlowStatus.answering:
+            break;
 
-            case TestFlowStatus.finished:
-              context.go(AppRoutes.result);
-              break;
-          }
-        },
-      );
-    });
+          case TestFlowStatus.blockCompleted:
+            context.go(AppRoutes.path);
+            break;
+
+          case TestFlowStatus.finished:
+            context.go(AppRoutes.result);
+            break;
+        }
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _testSubscription?.close();
+    super.dispose();
   }
 
   @override
@@ -53,12 +63,12 @@ class _TestPageState extends ConsumerState<TestPage> {
       backgroundColor: AppColors.backgroundLight,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.lg),
+          padding: const EdgeInsets.all(AppSpacing.sm),
           child: Column(
             children: [
               TestProgressHeader(
                 currentQuestion: state.currentIndex + 1,
-                totalQuestions: state.questions.length,
+                totalQuestions: state.totalQuestions,
               ),
               const SizedBox(height: AppSpacing.xl),
               QuestionCard(
@@ -75,9 +85,11 @@ class _TestPageState extends ConsumerState<TestPage> {
                 height: 56,
                 child: FilledButton(
                   onPressed: notifier.nextQuestion,
-                  child: const Text(
-                    'Continuar',
-                    style: TextStyle(
+                  child: Text(
+                    state.currentIndex == state.totalQuestions - 1
+                        ? 'Finalizar'
+                        : 'Continuar',
+                    style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w700,
                     ),

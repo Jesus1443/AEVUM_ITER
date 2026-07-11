@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../result/domain/services/result_calculator.dart';
 import '../../data/repositories/test_repository.dart';
 import '../../domain/enums/test_flow_status.dart';
 import 'test_state.dart';
@@ -9,25 +10,25 @@ final testProvider = NotifierProvider<TestNotifier, TestState>(
 );
 
 class TestNotifier extends Notifier<TestState> {
+  static const double _defaultAnswer = 5;
+
   @override
   TestState build() {
-    return TestState(
-      questions: const TestRepository().getQuestions(),
-      currentIndex: 0,
-      answers: const [],
-      currentValue: 5,
-      status: TestFlowStatus.answering,
-    );
+    return _createInitialState();
   }
 
   void updateValue(double value) {
     state = state.copyWith(
-      currentValue: value,
+      currentValue: value.clamp(0, 10).toDouble(),
     );
   }
 
   void nextQuestion() {
-    final answers = [
+    if (state.status != TestFlowStatus.answering) {
+      return;
+    }
+
+    final updatedAnswers = [
       ...state.answers,
       state.currentValue,
     ];
@@ -35,44 +36,54 @@ class TestNotifier extends Notifier<TestState> {
     final nextIndex = state.currentIndex + 1;
 
     if (nextIndex >= state.questions.length) {
-      state = state.copyWith(
-        answers: answers,
-        status: TestFlowStatus.finished,
+      final result = const ResultCalculator().calculate(
+        questions: state.questions,
+        answers: updatedAnswers,
       );
+
+      state = state.copyWith(
+        answers: List.unmodifiable(updatedAnswers),
+        status: TestFlowStatus.finished,
+        result: result,
+      );
+
       return;
     }
 
-    if (nextIndex % 5 == 0) {
-      state = state.copyWith(
-        currentIndex: nextIndex,
-        answers: answers,
-        currentValue: 5,
-        status: TestFlowStatus.blockCompleted,
-      );
-      return;
-    }
+    final hasCompletedBlock = nextIndex % 5 == 0;
 
     state = state.copyWith(
       currentIndex: nextIndex,
-      answers: answers,
-      currentValue: 5,
-      status: TestFlowStatus.answering,
+      answers: List.unmodifiable(updatedAnswers),
+      currentValue: _defaultAnswer,
+      status: hasCompletedBlock
+          ? TestFlowStatus.blockCompleted
+          : TestFlowStatus.answering,
     );
   }
 
   void continueTest() {
+    if (state.status != TestFlowStatus.blockCompleted) {
+      return;
+    }
+
     state = state.copyWith(
       status: TestFlowStatus.answering,
     );
   }
 
   void reset() {
-    state = TestState(
+    state = _createInitialState();
+  }
+
+  TestState _createInitialState() {
+    return TestState(
       questions: const TestRepository().getQuestions(),
       currentIndex: 0,
       answers: const [],
-      currentValue: 5,
+      currentValue: _defaultAnswer,
       status: TestFlowStatus.answering,
+      result: null,
     );
   }
 }
