@@ -1,4 +1,5 @@
 import '../../../test/domain/enums/riasec_type.dart';
+import '../enums/riasec_level.dart';
 
 class RiasecScores {
   const RiasecScores({
@@ -35,5 +36,27 @@ class RiasecScores {
       RiasecType.enterprising => 'E',
       RiasecType.conventional => 'C',
     };
+  }
+
+  RiasecLevel levelOf(RiasecType type) {
+    final value = scoreOf(type);
+
+    if (value >= 90) {
+      return RiasecLevel.veryHigh;
+    }
+
+    if (value >= 75) {
+      return RiasecLevel.high;
+    }
+
+    if (value >= 60) {
+      return RiasecLevel.moderate;
+    }
+
+    if (value >= 40) {
+      return RiasecLevel.low;
+    }
+
+    return RiasecLevel.veryLow;
   }
 }

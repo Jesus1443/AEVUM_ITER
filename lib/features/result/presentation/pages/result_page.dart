@@ -14,6 +14,7 @@ import '../widgets/interests_card.dart';
 import '../widgets/profile_card.dart';
 import '../widgets/riasec_scores_card.dart';
 import '../widgets/strengths_card.dart';
+import '../widgets/riasec_radar_card.dart';
 
 class ResultPage extends ConsumerWidget {
   const ResultPage({super.key});
@@ -89,6 +90,12 @@ class ResultPage extends ConsumerWidget {
               ),
 
               const SizedBox(height: AppSpacing.xl),
+
+              RiasecRadarCard(
+                scores: result.riasecScores,
+              ),
+
+              const SizedBox(height: AppSpacing.lg),
 
               RiasecScoresCard(
                 scores: result.riasecScores,
