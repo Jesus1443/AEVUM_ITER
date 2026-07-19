@@ -63,7 +63,7 @@ class _TestPageState extends ConsumerState<TestPage> {
       backgroundColor: AppColors.backgroundLight,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.sm),
+          padding: const EdgeInsets.all(AppSpacing.lg),
           child: Column(
             children: [
               TestProgressHeader(
