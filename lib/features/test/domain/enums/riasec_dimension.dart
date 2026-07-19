@@ -1,4 +1,4 @@
-enum RiasecType {
+enum RiasecDimension {
   realistic,
   investigative,
   artistic,

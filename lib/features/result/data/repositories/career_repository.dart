@@ -1,95 +1,132 @@
-import '../../../test/domain/enums/riasec_type.dart';
 import '../../domain/entities/career_profile.dart';
+import '../../../test/domain/enums/career.dart';
+import '../../../test/domain/enums/riasec_dimension.dart';
 
 class CareerRepository {
   const CareerRepository();
 
-  List<CareerProfile> getCareers() {
-    return const [
-      CareerProfile(
-        id: 'computer_systems',
-        name: 'Ingeniería en Sistemas Computacionales',
-        weights: {
-          RiasecType.realistic: 0.70,
-          RiasecType.investigative: 1.00,
-          RiasecType.artistic: 0.35,
-          RiasecType.social: 0.30,
-          RiasecType.enterprising: 0.45,
-          RiasecType.conventional: 0.75,
-        },
-      ),
-      CareerProfile(
-        id: 'informatics',
-        name: 'Informática',
-        weights: {
-          RiasecType.realistic: 0.55,
-          RiasecType.investigative: 0.90,
-          RiasecType.artistic: 0.40,
-          RiasecType.social: 0.45,
-          RiasecType.enterprising: 0.55,
-          RiasecType.conventional: 0.85,
-        },
-      ),
-      CareerProfile(
-        id: 'electromechanics',
-        name: 'Ingeniería Electromecánica',
-        weights: {
-          RiasecType.realistic: 1.00,
-          RiasecType.investigative: 0.85,
-          RiasecType.artistic: 0.20,
-          RiasecType.social: 0.25,
-          RiasecType.enterprising: 0.40,
-          RiasecType.conventional: 0.65,
-        },
-      ),
-      CareerProfile(
-        id: 'civil_engineering',
-        name: 'Ingeniería Civil',
-        weights: {
-          RiasecType.realistic: 0.95,
-          RiasecType.investigative: 0.80,
-          RiasecType.artistic: 0.35,
-          RiasecType.social: 0.35,
-          RiasecType.enterprising: 0.50,
-          RiasecType.conventional: 0.70,
-        },
-      ),
-      CareerProfile(
-        id: 'business_management',
-        name: 'Gestión Empresarial',
-        weights: {
-          RiasecType.realistic: 0.30,
-          RiasecType.investigative: 0.45,
-          RiasecType.artistic: 0.35,
-          RiasecType.social: 0.65,
-          RiasecType.enterprising: 1.00,
-          RiasecType.conventional: 0.80,
-        },
-      ),
-      CareerProfile(
-        id: 'accounting',
-        name: 'Contabilidad',
-        weights: {
-          RiasecType.realistic: 0.25,
-          RiasecType.investigative: 0.50,
-          RiasecType.artistic: 0.15,
-          RiasecType.social: 0.35,
-          RiasecType.enterprising: 0.70,
-          RiasecType.conventional: 1.00,
-        },
-      ),
-      CareerProfile(
-        id: 'architecture',
-        name: 'Arquitectura',
-        weights: {
-          RiasecType.realistic: 0.75,
-          RiasecType.investigative: 0.65,
-          RiasecType.artistic: 1.00,
-          RiasecType.social: 0.45,
-          RiasecType.enterprising: 0.50,
-          RiasecType.conventional: 0.55,
-        },
-      ),
-    ];
+  List<CareerProfile> getCareers() => List.unmodifiable(_careers);
+
+  CareerProfile getByCareer(Career career) {
+    return _careers.firstWhere(
+      (profile) => profile.career == career,
+    );
   }
 }
+
+const List<CareerProfile> _careers = [
+
+  CareerProfile(
+    career: Career.civil,
+    name: 'Ingeniería Civil',
+    description:
+        'Profesionales dedicados al diseño, construcción y mantenimiento de obras de infraestructura.',
+    dimensions: [
+      RiasecDimension.realistic,
+    ],
+  ),
+
+  CareerProfile(
+    career: Career.electromechanical,
+    name: 'Ingeniería Electromecánica',
+    description:
+        'Diseño, operación y mantenimiento de sistemas mecánicos, eléctricos e industriales.',
+    dimensions: [
+      RiasecDimension.realistic,
+    ],
+  ),
+
+  CareerProfile(
+    career: Career.electronics,
+    name: 'Ingeniería Electrónica',
+    description:
+        'Desarrollo de sistemas electrónicos, automatización, control y telecomunicaciones.',
+    dimensions: [
+      RiasecDimension.realistic,
+    ],
+  ),
+
+  CareerProfile(
+    career: Career.biochemistry,
+    name: 'Ingeniería Bioquímica',
+    description:
+        'Aplicación de procesos químicos y biológicos para resolver problemas industriales y ambientales.',
+    dimensions: [
+      RiasecDimension.investigative,
+    ],
+  ),
+
+  CareerProfile(
+    career: Career.computerSystems,
+    name: 'Ingeniería en Sistemas Computacionales',
+    description:
+        'Desarrollo de software, bases de datos, redes, inteligencia artificial y ciberseguridad.',
+    dimensions: [
+      RiasecDimension.investigative,
+    ],
+  ),
+
+  CareerProfile(
+    career: Career.informatics,
+    name: 'Ingeniería Informática',
+    description:
+        'Diseño e implementación de soluciones informáticas para organizaciones.',
+    dimensions: [
+      RiasecDimension.investigative,
+    ],
+  ),
+
+  CareerProfile(
+    career: Career.architecture,
+    name: 'Arquitectura',
+    description:
+        'Diseño de espacios funcionales y estéticos para mejorar el entorno construido.',
+    dimensions: [
+      RiasecDimension.realistic,
+      RiasecDimension.artistic,
+    ],
+  ),
+
+  CareerProfile(
+    career: Career.applicationDevelopment,
+    name: 'Desarrollo de Aplicaciones (UI/UX)',
+    description:
+        'Diseño de interfaces y experiencias de usuario para aplicaciones digitales.',
+    dimensions: [
+      RiasecDimension.artistic,
+    ],
+  ),
+
+  CareerProfile(
+    career: Career.businessAdministration,
+    name: 'Licenciatura en Administración',
+    description:
+        'Planeación, organización y dirección de empresas y organizaciones.',
+    dimensions: [
+      RiasecDimension.social,
+      RiasecDimension.enterprising,
+      RiasecDimension.conventional,
+    ],
+  ),
+
+  CareerProfile(
+    career: Career.businessManagement,
+    name: 'Ingeniería en Gestión Empresarial',
+    description:
+        'Gestión de proyectos, innovación, procesos y desarrollo organizacional.',
+    dimensions: [
+      RiasecDimension.social,
+      RiasecDimension.enterprising,
+    ],
+  ),
+
+  CareerProfile(
+    career: Career.accounting,
+    name: 'Licenciatura en Contaduría',
+    description:
+        'Administración de recursos financieros, auditoría e información contable.',
+    dimensions: [
+      RiasecDimension.conventional,
+    ],
+  ),
+];

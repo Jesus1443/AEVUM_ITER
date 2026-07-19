@@ -1,25 +1,16 @@
-import '../enums/riasec_type.dart';
+import '../enums/career.dart';
+import '../enums/riasec_dimension.dart';
 
 class TestQuestion {
   const TestQuestion({
     required this.id,
-    required this.question,
-    required this.type,
+    required this.text,
+    required this.dimension,
+    required this.careers,
   });
 
-  final String id;
-  final String question;
-  final RiasecType type;
-
-  TestQuestion copyWith({
-    String? id,
-    String? question,
-    RiasecType? type,
-  }) {
-    return TestQuestion(
-      id: id ?? this.id,
-      question: question ?? this.question,
-      type: type ?? this.type,
-    );
-  }
+  final int id;
+  final String text;
+  final RiasecDimension dimension;
+  final List<Career> careers;
 }

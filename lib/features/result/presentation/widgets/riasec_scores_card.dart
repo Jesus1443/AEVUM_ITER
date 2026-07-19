@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../app/theme/app_colors.dart';
 import '../../../../core/constants/app_radius.dart';
 import '../../../../core/constants/app_spacing.dart';
-import '../../../test/domain/enums/riasec_type.dart';
+import '../../../test/domain/enums/riasec_dimension.dart';
 import '../../domain/entities/riasec_scores.dart';
 
 class RiasecScoresCard extends StatelessWidget {
@@ -16,7 +16,7 @@ class RiasecScoresCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ranking = scores.ranking;
+    final ranking = scores.sortedScores;
 
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
@@ -61,7 +61,7 @@ class _RiasecScoreRow extends StatelessWidget {
     required this.isDominant,
   });
 
-  final RiasecType type;
+  final RiasecDimension type;
   final double score;
   final bool isDominant;
 
@@ -117,14 +117,14 @@ class _RiasecScoreRow extends StatelessWidget {
     );
   }
 
-  String _nameOf(RiasecType type) {
+  String _nameOf(RiasecDimension type) {
     return switch (type) {
-      RiasecType.realistic => 'Realista',
-      RiasecType.investigative => 'Investigador',
-      RiasecType.artistic => 'Artístico',
-      RiasecType.social => 'Social',
-      RiasecType.enterprising => 'Emprendedor',
-      RiasecType.conventional => 'Convencional',
+      RiasecDimension.realistic => 'Realista',
+      RiasecDimension.investigative => 'Investigador',
+      RiasecDimension.artistic => 'Artístico',
+      RiasecDimension.social => 'Social',
+      RiasecDimension.enterprising => 'Emprendedor',
+      RiasecDimension.conventional => 'Convencional',
     };
   }
 }

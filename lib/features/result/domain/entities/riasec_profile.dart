@@ -1,4 +1,4 @@
-import '../../../test/domain/enums/riasec_type.dart';
+import '../../../test/domain/enums/riasec_dimension.dart';
 
 class RiasecProfile {
   const RiasecProfile({
@@ -11,7 +11,7 @@ class RiasecProfile {
     required this.workEnvironments,
   });
 
-  final RiasecType type;
+  final RiasecDimension type;
   final String name;
   final String shortDescription;
   final String description;

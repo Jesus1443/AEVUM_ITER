@@ -72,7 +72,7 @@ class _TestPageState extends ConsumerState<TestPage> {
               ),
               const SizedBox(height: AppSpacing.xl),
               QuestionCard(
-                question: state.currentQuestion.question,
+                question: state.currentQuestion.text,
               ),
               const SizedBox(height: AppSpacing.xl),
               AnswerSlider(

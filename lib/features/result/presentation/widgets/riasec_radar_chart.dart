@@ -2,48 +2,79 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
-import '../../../../app/theme/app_colors.dart';
-import '../../../test/domain/enums/riasec_type.dart';
+import '../../../test/domain/enums/riasec_dimension.dart';
 import '../../domain/entities/riasec_scores.dart';
 
 class RiasecRadarChart extends StatelessWidget {
   const RiasecRadarChart({
-    required this.scores,
-    this.size = 280,
-    super.key,
+    required this.scores, super.key,
+    this.size = 320,
+    this.showPercentages = true,
   });
 
   final RiasecScores scores;
   final double size;
+  final bool showPercentages;
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: size,
-      height: size,
-      child: CustomPaint(
-        painter: _RiasecRadarPainter(
-          scores: scores,
+    final theme = Theme.of(context);
+
+    return Semantics(
+      label: 'Gráfico de resultados RIASEC',
+      child: SizedBox(
+        width: size,
+        height: size,
+        child: CustomPaint(
+          painter: _RiasecRadarChartPainter(
+            scores: scores,
+            backgroundColor:
+                theme.colorScheme.surfaceContainerHighest,
+            gridColor: theme.colorScheme.outlineVariant,
+            axisColor: theme.colorScheme.outline,
+            dataColor: theme.colorScheme.primary,
+            textColor: theme.colorScheme.onSurface,
+            secondaryTextColor:
+                theme.colorScheme.onSurfaceVariant,
+            showPercentages: showPercentages,
+          ),
         ),
       ),
     );
   }
 }
 
-class _RiasecRadarPainter extends CustomPainter {
-  const _RiasecRadarPainter({
+class _RiasecRadarChartPainter extends CustomPainter {
+  const _RiasecRadarChartPainter({
     required this.scores,
+    required this.backgroundColor,
+    required this.gridColor,
+    required this.axisColor,
+    required this.dataColor,
+    required this.textColor,
+    required this.secondaryTextColor,
+    required this.showPercentages,
   });
 
   final RiasecScores scores;
+  final Color backgroundColor;
+  final Color gridColor;
+  final Color axisColor;
+  final Color dataColor;
+  final Color textColor;
+  final Color secondaryTextColor;
+  final bool showPercentages;
 
-  static const List<RiasecType> _types = [
-    RiasecType.investigative,
-    RiasecType.artistic,
-    RiasecType.social,
-    RiasecType.enterprising,
-    RiasecType.conventional,
-    RiasecType.realistic,
+  static const int _axisCount = 6;
+  static const int _gridLevels = 5;
+
+  static const List<RiasecDimension> _dimensions = [
+    RiasecDimension.realistic,
+    RiasecDimension.investigative,
+    RiasecDimension.artistic,
+    RiasecDimension.social,
+    RiasecDimension.enterprising,
+    RiasecDimension.conventional,
   ];
 
   @override
@@ -53,36 +84,59 @@ class _RiasecRadarPainter extends CustomPainter {
       size.height / 2,
     );
 
-    final radius = math.min(
+    final chartRadius = math.min(
           size.width,
           size.height,
-        ) /
-        2.75;
+        ) *
+        0.31;
+
+    _drawBackground(
+      canvas: canvas,
+      center: center,
+      radius: chartRadius,
+    );
 
     _drawGrid(
       canvas: canvas,
       center: center,
-      radius: radius,
+      radius: chartRadius,
     );
 
     _drawAxes(
       canvas: canvas,
       center: center,
-      radius: radius,
+      radius: chartRadius,
     );
 
-    _drawScoreArea(
+    _drawDataPolygon(
       canvas: canvas,
       center: center,
-      radius: radius,
+      radius: chartRadius,
     );
 
     _drawLabels(
       canvas: canvas,
       size: size,
       center: center,
+      radius: chartRadius,
+    );
+  }
+
+  void _drawBackground({
+    required Canvas canvas,
+    required Offset center,
+    required double radius,
+  }) {
+    final path = _polygonPath(
+      center: center,
       radius: radius,
     );
+
+    final paint = Paint()
+      ..color = backgroundColor
+      ..style = PaintingStyle.fill;
+
+    canvas.drawPath(path, paint);
   }
 
   void _drawGrid({
@@ -90,22 +144,21 @@ class _RiasecRadarPainter extends CustomPainter {
     required Offset center,
     required double radius,
   }) {
-    final gridPaint = Paint()
-      ..color = AppColors.primaryDark.withValues(alpha: 0.12)
+    final paint = Paint()
+      ..color = gridColor
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.2;
+      ..strokeWidth = 1;
 
-    const levels = 5;
-
-    for (var level = 1; level <= levels; level++) {
-      final levelRadius = radius * (level / levels);
+    for (var level = 1; level <= _gridLevels; level++) {
+      final levelRadius =
+          radius * (level / _gridLevels);
 
       final path = _polygonPath(
         center: center,
         radius: levelRadius,
       );
 
-      canvas.drawPath(path, gridPaint);
+      canvas.drawPath(path, paint);
     }
   }
 
@@ -114,12 +167,13 @@ class _RiasecRadarPainter extends CustomPainter {
     required Offset center,
     required double radius,
   }) {
-    final axisPaint = Paint()
-      ..color = AppColors.primaryDark.withValues(alpha: 0.12)
-      ..strokeWidth = 1.1;
+    final paint = Paint()
+      ..color = axisColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1;
 
-    for (var index = 0; index < _types.length; index++) {
-      final point = _pointFor(
+    for (var index = 0; index < _axisCount; index++) {
+      final endpoint = _pointForIndex(
         center: center,
         radius: radius,
         index: index,
@@ -127,92 +181,102 @@ class _RiasecRadarPainter extends CustomPainter {
 
       canvas.drawLine(
         center,
-        point,
-        axisPaint,
+        endpoint,
+        paint,
       );
     }
   }
 
-  void _drawScoreArea({
+  void _drawDataPolygon({
     required Canvas canvas,
     required Offset center,
     required double radius,
   }) {
-    final scorePath = Path();
+    final path = Path();
 
-    for (var index = 0; index < _types.length; index++) {
-      final type = _types[index];
-      final score = scores.scoreOf(type).clamp(0, 100);
-      final scoreRadius = radius * (score / 100);
+    for (var index = 0; index < _dimensions.length; index++) {
+      final dimension = _dimensions[index];
+      final rawScore = scores.getScore(dimension);
 
-      final point = _pointFor(
+      final normalizedScore =
+          (rawScore / 100).clamp(0.0, 1.0);
+
+      final point = _pointForIndex(
         center: center,
-        radius: scoreRadius,
+        radius: radius * normalizedScore,
         index: index,
       );
 
       if (index == 0) {
-        scorePath.moveTo(point.dx, point.dy);
+        path.moveTo(
+          point.dx,
+          point.dy,
+        );
       } else {
-        scorePath.lineTo(point.dx, point.dy);
+        path.lineTo(
+          point.dx,
+          point.dy,
+        );
       }
     }
 
-    scorePath.close();
+    path.close();
 
     final fillPaint = Paint()
-      ..color = AppColors.primary.withValues(alpha: 0.28)
+      ..color = dataColor.withValues(alpha: 0.25)
       ..style = PaintingStyle.fill;
 
     final borderPaint = Paint()
-      ..color = AppColors.primaryDark
+      ..color = dataColor
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2.5
       ..strokeJoin = StrokeJoin.round;
 
-    canvas.drawPath(scorePath, fillPaint);
-    canvas.drawPath(scorePath, borderPaint);
+    canvas.drawPath(path, fillPaint);
+    canvas.drawPath(path, borderPaint);
 
-    _drawScorePoints(
+    _drawDataPoints(
       canvas: canvas,
       center: center,
       radius: radius,
     );
   }
 
-  void _drawScorePoints({
+  void _drawDataPoints({
     required Canvas canvas,
     required Offset center,
     required double radius,
   }) {
     final outerPaint = Paint()
-      ..color = Colors.white
+      ..color = dataColor
       ..style = PaintingStyle.fill;
 
     final innerPaint = Paint()
-      ..color = AppColors.primaryDark
+      ..color = Colors.white
       ..style = PaintingStyle.fill;
 
-    for (var index = 0; index < _types.length; index++) {
-      final type = _types[index];
-      final score = scores.scoreOf(type).clamp(0, 100);
-      final scoreRadius = radius * (score / 100);
+    for (var index = 0; index < _dimensions.length; index++) {
+      final dimension = _dimensions[index];
+      final rawScore = scores.getScore(dimension);
 
-      final point = _pointFor(
+      final normalizedScore =
+          (rawScore / 100).clamp(0.0, 1.0);
+
+      final point = _pointForIndex(
         center: center,
-        radius: scoreRadius,
+        radius: radius * normalizedScore,
         index: index,
       );
 
       canvas.drawCircle(
         point,
-        5.5,
+        5,
         outerPaint,
       );
 
       canvas.drawCircle(
         point,
-        3.5,
+        2,
         innerPaint,
       );
     }
@@ -224,62 +288,83 @@ class _RiasecRadarPainter extends CustomPainter {
     required Offset center,
     required double radius,
   }) {
-    final labelRadius = radius + 31;
+    final labelRadius = radius + 42;
 
-    for (var index = 0; index < _types.length; index++) {
-      final type = _types[index];
-
-      final point = _pointFor(
+    for (var index = 0; index < _dimensions.length; index++) {
+      final dimension = _dimensions[index];
+      final labelPoint = _pointForIndex(
         center: center,
         radius: labelRadius,
         index: index,
       );
 
-      final percentage = scores.scoreOf(type).clamp(0, 100).round();
+      final score = scores.getScore(dimension);
 
-      final textPainter = TextPainter(
+      final titlePainter = TextPainter(
         text: TextSpan(
-          children: [
-            TextSpan(
-              text: '${_shortNameOf(type)}\n',
-              style: const TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w800,
-                color: AppColors.textDark,
-              ),
-            ),
-            TextSpan(
-              text: '$percentage%',
-              style: const TextStyle(
-                fontSize: 10,
-                fontWeight: FontWeight.w700,
-                color: AppColors.textMuted,
-              ),
-            ),
-          ],
+          text: _shortLabelFor(dimension),
+          style: TextStyle(
+            color: textColor,
+            fontSize: 13,
+            fontWeight: FontWeight.w700,
+          ),
         ),
-        textAlign: TextAlign.center,
         textDirection: TextDirection.ltr,
-      )..layout(
-          maxWidth: 76,
-        );
+        textAlign: TextAlign.center,
+      )..layout();
 
-      final offset = Offset(
-        point.dx - (textPainter.width / 2),
-        point.dy - (textPainter.height / 2),
+      final titleOffset = Offset(
+        _adjustHorizontalPosition(
+          index: index,
+          centerX: labelPoint.dx,
+          textWidth: titlePainter.width,
+        ),
+        labelPoint.dy - titlePainter.height / 2,
       );
 
-      textPainter.paint(
+      titlePainter.paint(
         canvas,
-        Offset(
-          offset.dx.clamp(
-            0,
-            size.width - textPainter.width,
+        _constrainOffset(
+          offset: titleOffset,
+          textSize: titlePainter.size,
+          canvasSize: size,
+        ),
+      );
+
+      if (!showPercentages) {
+        continue;
+      }
+
+      final percentagePainter = TextPainter(
+        text: TextSpan(
+          text: '${score.round()}%',
+          style: TextStyle(
+            color: secondaryTextColor,
+            fontSize: 11,
+            fontWeight: FontWeight.w500,
           ),
-          offset.dy.clamp(
-            0,
-            size.height - textPainter.height,
-          ),
+        ),
+        textDirection: TextDirection.ltr,
+        textAlign: TextAlign.center,
+      )..layout();
+
+      final percentageOffset = Offset(
+        _adjustHorizontalPosition(
+          index: index,
+          centerX: labelPoint.dx,
+          textWidth: percentagePainter.width,
+        ),
+        labelPoint.dy +
+            titlePainter.height / 2 +
+            2,
+      );
+
+      percentagePainter.paint(
+        canvas,
+        _constrainOffset(
+          offset: percentageOffset,
+          textSize: percentagePainter.size,
+          canvasSize: size,
         ),
       );
     }
@@ -291,17 +376,23 @@ class _RiasecRadarPainter extends CustomPainter {
   }) {
     final path = Path();
 
-    for (var index = 0; index < _types.length; index++) {
-      final point = _pointFor(
+    for (var index = 0; index < _axisCount; index++) {
+      final point = _pointForIndex(
         center: center,
         radius: radius,
         index: index,
       );
 
       if (index == 0) {
-        path.moveTo(point.dx, point.dy);
+        path.moveTo(
+          point.dx,
+          point.dy,
+        );
       } else {
-        path.lineTo(point.dx, point.dy);
+        path.lineTo(
+          point.dx,
+          point.dy,
+        );
       }
     }
 
@@ -310,13 +401,14 @@ class _RiasecRadarPainter extends CustomPainter {
     return path;
   }
 
-  Offset _pointFor({
+  Offset _pointForIndex({
     required Offset center,
     required double radius,
     required int index,
   }) {
-    final angle = (-math.pi / 2) +
-        (2 * math.pi * index / _types.length);
+    final angle =
+        (-math.pi / 2) +
+        (2 * math.pi * index / _axisCount);
 
     return Offset(
       center.dx + radius * math.cos(angle),
@@ -324,21 +416,88 @@ class _RiasecRadarPainter extends CustomPainter {
     );
   }
 
-  String _shortNameOf(RiasecType type) {
-    return switch (type) {
-      RiasecType.realistic => 'Realista',
-      RiasecType.investigative => 'Investigador',
-      RiasecType.artistic => 'Artístico',
-      RiasecType.social => 'Social',
-      RiasecType.enterprising => 'Emprendedor',
-      RiasecType.conventional => 'Convencional',
-    };
+  double _adjustHorizontalPosition({
+    required int index,
+    required double centerX,
+    required double textWidth,
+  }) {
+    switch (index) {
+      case 1:
+      case 2:
+        return centerX;
+      case 4:
+      case 5:
+        return centerX - textWidth;
+      default:
+        return centerX - textWidth / 2;
+    }
+  }
+
+  Offset _constrainOffset({
+    required Offset offset,
+    required Size textSize,
+    required Size canvasSize,
+  }) {
+    final dx = offset.dx.clamp(
+      0.0,
+      math.max(
+        0.0,
+        canvasSize.width - textSize.width,
+      ),
+    );
+
+    final dy = offset.dy.clamp(
+      0.0,
+      math.max(
+        0.0,
+        canvasSize.height - textSize.height,
+      ),
+    );
+
+    return Offset(
+      dx.toDouble(),
+      dy.toDouble(),
+    );
+  }
+
+  String _shortLabelFor(
+    RiasecDimension dimension,
+  ) {
+    switch (dimension) {
+      case RiasecDimension.realistic:
+        return 'Realista';
+      case RiasecDimension.investigative:
+        return 'Investigador';
+      case RiasecDimension.artistic:
+        return 'Artístico';
+      case RiasecDimension.social:
+        return 'Social';
+      case RiasecDimension.enterprising:
+        return 'Emprendedor';
+      case RiasecDimension.conventional:
+        return 'Convencional';
+    }
   }
 
   @override
   bool shouldRepaint(
-    covariant _RiasecRadarPainter oldDelegate,
+    covariant _RiasecRadarChartPainter oldDelegate,
   ) {
-    return oldDelegate.scores.values != scores.values;
+    final scoresChanged = RiasecDimension.values.any(
+      (dimension) {
+        return oldDelegate.scores.getScore(dimension) !=
+            scores.getScore(dimension);
+      },
+    );
+
+    return scoresChanged ||
+        oldDelegate.backgroundColor != backgroundColor ||
+        oldDelegate.gridColor != gridColor ||
+        oldDelegate.axisColor != axisColor ||
+        oldDelegate.dataColor != dataColor ||
+        oldDelegate.textColor != textColor ||
+        oldDelegate.secondaryTextColor !=
+            secondaryTextColor ||
+        oldDelegate.showPercentages != showPercentages;
   }
 }

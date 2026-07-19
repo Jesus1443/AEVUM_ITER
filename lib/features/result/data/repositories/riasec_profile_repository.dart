@@ -1,4 +1,4 @@
-import '../../../test/domain/enums/riasec_type.dart';
+import '../../../test/domain/enums/riasec_dimension.dart';
 import '../../domain/entities/riasec_profile.dart';
 
 class RiasecProfileRepository {
@@ -7,7 +7,7 @@ class RiasecProfileRepository {
   List<RiasecProfile> getProfiles() {
     return const [
       RiasecProfile(
-        type: RiasecType.realistic,
+        type: RiasecDimension.realistic,
         name: 'Realista',
         shortDescription: 'Práctico, técnico y orientado a la acción.',
         description:
@@ -36,7 +36,7 @@ class RiasecProfileRepository {
         ],
       ),
       RiasecProfile(
-        type: RiasecType.investigative,
+        type: RiasecDimension.investigative,
         name: 'Investigador',
         shortDescription: 'Analítico, curioso y orientado al conocimiento.',
         description:
@@ -65,7 +65,7 @@ class RiasecProfileRepository {
         ],
       ),
       RiasecProfile(
-        type: RiasecType.artistic,
+        type: RiasecDimension.artistic,
         name: 'Artístico',
         shortDescription: 'Creativo, expresivo y orientado a la innovación.',
         description:
@@ -93,7 +93,7 @@ class RiasecProfileRepository {
         ],
       ),
       RiasecProfile(
-        type: RiasecType.social,
+        type: RiasecDimension.social,
         name: 'Social',
         shortDescription: 'Colaborativo, empático y orientado a las personas.',
         description:
@@ -122,7 +122,7 @@ class RiasecProfileRepository {
         ],
       ),
       RiasecProfile(
-        type: RiasecType.enterprising,
+        type: RiasecDimension.enterprising,
         name: 'Emprendedor',
         shortDescription: 'Persuasivo, dinámico y orientado al liderazgo.',
         description:
@@ -150,7 +150,7 @@ class RiasecProfileRepository {
         ],
       ),
       RiasecProfile(
-        type: RiasecType.conventional,
+        type: RiasecDimension.conventional,
         name: 'Convencional',
         shortDescription: 'Organizado, preciso y orientado a los procesos.',
         description:
@@ -181,7 +181,7 @@ class RiasecProfileRepository {
     ];
   }
 
-  RiasecProfile getProfile(RiasecType type) {
+  RiasecProfile getProfile(RiasecDimension type) {
     return getProfiles().firstWhere(
       (profile) => profile.type == type,
     );

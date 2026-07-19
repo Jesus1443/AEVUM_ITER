@@ -2,7 +2,8 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:aevum_iter/features/result/domain/services/result_calculator.dart';
 import 'package:aevum_iter/features/test/domain/entities/test_question.dart';
-import 'package:aevum_iter/features/test/domain/enums/riasec_type.dart';
+import 'package:aevum_iter/features/test/domain/enums/career.dart';
+import 'package:aevum_iter/features/test/domain/enums/riasec_dimension.dart';
 
 void main() {
   group('ResultCalculator', () {
@@ -16,49 +17,75 @@ void main() {
         ...List.generate(
           5,
           (index) => TestQuestion(
-            id: 'R$index',
-            question: 'R$index',
-            type: RiasecType.realistic,
+            id: index + 1,
+            text: 'Pregunta realista ${index + 1}',
+            dimension: RiasecDimension.realistic,
+            careers: const [
+              Career.civil,
+              Career.electromechanical,
+              Career.electronics,
+            ],
           ),
         ),
         ...List.generate(
           5,
           (index) => TestQuestion(
-            id: 'I$index',
-            question: 'I$index',
-            type: RiasecType.investigative,
+            id: index + 6,
+            text: 'Pregunta investigadora ${index + 1}',
+            dimension: RiasecDimension.investigative,
+            careers: const [
+              Career.biochemistry,
+              Career.computerSystems,
+              Career.informatics,
+            ],
           ),
         ),
         ...List.generate(
           5,
           (index) => TestQuestion(
-            id: 'A$index',
-            question: 'A$index',
-            type: RiasecType.artistic,
+            id: index + 11,
+            text: 'Pregunta artística ${index + 1}',
+            dimension: RiasecDimension.artistic,
+            careers: const [
+              Career.architecture,
+              Career.applicationDevelopment,
+            ],
           ),
         ),
         ...List.generate(
           5,
           (index) => TestQuestion(
-            id: 'S$index',
-            question: 'S$index',
-            type: RiasecType.social,
+            id: index + 16,
+            text: 'Pregunta social ${index + 1}',
+            dimension: RiasecDimension.social,
+            careers: const [
+              Career.businessAdministration,
+              Career.businessManagement,
+            ],
           ),
         ),
         ...List.generate(
           5,
           (index) => TestQuestion(
-            id: 'E$index',
-            question: 'E$index',
-            type: RiasecType.enterprising,
+            id: index + 21,
+            text: 'Pregunta emprendedora ${index + 1}',
+            dimension: RiasecDimension.enterprising,
+            careers: const [
+              Career.businessAdministration,
+              Career.businessManagement,
+            ],
           ),
         ),
         ...List.generate(
           5,
           (index) => TestQuestion(
-            id: 'C$index',
-            question: 'C$index',
-            type: RiasecType.conventional,
+            id: index + 26,
+            text: 'Pregunta convencional ${index + 1}',
+            dimension: RiasecDimension.conventional,
+            careers: const [
+              Career.businessAdministration,
+              Career.accounting,
+            ],
           ),
         ),
       ];
@@ -66,12 +93,12 @@ void main() {
 
     test('calcula correctamente los porcentajes RIASEC', () {
       final answers = [
-        ...List.filled(5, 10.0),
-        ...List.filled(5, 8.0),
-        ...List.filled(5, 6.0),
+        ...List.filled(5, 5.0),
         ...List.filled(5, 4.0),
+        ...List.filled(5, 3.0),
         ...List.filled(5, 2.0),
-        ...List.filled(5, 0.0),
+        ...List.filled(5, 1.0),
+        ...List.filled(5, 1.0),
       ];
 
       final result = calculator.calculate(
@@ -80,44 +107,56 @@ void main() {
       );
 
       expect(
-        result.riasecScores.scoreOf(RiasecType.realistic),
+        result.riasecScores.getScore(
+          RiasecDimension.realistic,
+        ),
         100,
       );
 
       expect(
-        result.riasecScores.scoreOf(RiasecType.investigative),
-        80,
+        result.riasecScores.getScore(
+          RiasecDimension.investigative,
+        ),
+        75,
       );
 
       expect(
-        result.riasecScores.scoreOf(RiasecType.artistic),
-        60,
+        result.riasecScores.getScore(
+          RiasecDimension.artistic,
+        ),
+        50,
       );
 
       expect(
-        result.riasecScores.scoreOf(RiasecType.social),
-        40,
+        result.riasecScores.getScore(
+          RiasecDimension.social,
+        ),
+        25,
       );
 
       expect(
-        result.riasecScores.scoreOf(RiasecType.enterprising),
-        20,
+        result.riasecScores.getScore(
+          RiasecDimension.enterprising,
+        ),
+        0,
       );
 
       expect(
-        result.riasecScores.scoreOf(RiasecType.conventional),
+        result.riasecScores.getScore(
+          RiasecDimension.conventional,
+        ),
         0,
       );
     });
 
     test('genera correctamente el código Holland', () {
       final answers = [
-        ...List.filled(5, 10.0),
-        ...List.filled(5, 8.0),
-        ...List.filled(5, 6.0),
+        ...List.filled(5, 5.0),
         ...List.filled(5, 4.0),
+        ...List.filled(5, 3.0),
         ...List.filled(5, 2.0),
-        ...List.filled(5, 0.0),
+        ...List.filled(5, 1.0),
+        ...List.filled(5, 1.0),
       ];
 
       final result = calculator.calculate(
@@ -133,12 +172,12 @@ void main() {
 
     test('ordena correctamente el ranking RIASEC', () {
       final answers = [
-        ...List.filled(5, 10.0),
-        ...List.filled(5, 8.0),
-        ...List.filled(5, 6.0),
+        ...List.filled(5, 5.0),
         ...List.filled(5, 4.0),
+        ...List.filled(5, 3.0),
         ...List.filled(5, 2.0),
-        ...List.filled(5, 0.0),
+        ...List.filled(5, 1.0),
+        ...List.filled(5, 1.0),
       ];
 
       final result = calculator.calculate(
@@ -146,60 +185,92 @@ void main() {
         answers: answers,
       );
 
-      final ranking = result.riasecScores.ranking;
+      final ranking = result.riasecScores.sortedScores;
 
-      expect(ranking.first.key, RiasecType.realistic);
-      expect(ranking.last.key, RiasecType.conventional);
+      expect(
+        ranking.first.key,
+        RiasecDimension.realistic,
+      );
+
+      expect(
+        ranking.first.value,
+        100,
+      );
+
+      expect(
+        ranking.last.value,
+        0,
+      );
     });
 
     test('las carreras se ordenan por compatibilidad', () {
-      final answers = List.filled(30, 10.0);
+      final answers = List.filled(30, 5.0);
 
       final result = calculator.calculate(
         questions: questions,
         answers: answers,
       );
 
-      for (var i = 0; i < result.careerMatches.length - 1; i++) {
+      for (
+        var index = 0;
+        index < result.careerMatches.length - 1;
+        index++
+      ) {
         expect(
-          result.careerMatches[i].compatibility,
+          result.careerMatches[index].compatibility,
           greaterThanOrEqualTo(
-            result.careerMatches[i + 1].compatibility,
+            result.careerMatches[index + 1].compatibility,
           ),
         );
       }
     });
 
-    test('lanza excepción si preguntas y respuestas no coinciden', () {
+    test(
+      'lanza excepción si preguntas y respuestas no coinciden',
+      () {
+        expect(
+          () => calculator.calculate(
+            questions: questions,
+            answers: [],
+          ),
+          throwsArgumentError,
+        );
+      },
+    );
+
+    test('lanza excepción si una respuesta supera el máximo', () {
+      final answers = List.filled(30, 5.0);
+      answers[0] = 6.0;
+
       expect(
         () => calculator.calculate(
           questions: questions,
-          answers: [],
+          answers: answers,
         ),
         throwsArgumentError,
       );
     });
 
-    test('limita respuestas fuera del rango permitido', () {
-      final answers = [
-        ...List.filled(5, 15.0),
-        ...List.filled(5, -5.0),
-        ...List.filled(20, 10.0),
-      ];
-
-      final result = calculator.calculate(
-        questions: questions,
-        answers: answers,
-      );
+    test('lanza excepción si una respuesta es menor al mínimo', () {
+      final answers = List.filled(30, 5.0);
+      answers[0] = 0.0;
 
       expect(
-        result.riasecScores.scoreOf(RiasecType.realistic),
-        100,
+        () => calculator.calculate(
+          questions: questions,
+          answers: answers,
+        ),
+        throwsArgumentError,
       );
+    });
 
+    test('lanza excepción si no existen preguntas', () {
       expect(
-        result.riasecScores.scoreOf(RiasecType.investigative),
-        0,
+        () => calculator.calculate(
+          questions: const [],
+          answers: const [],
+        ),
+        throwsArgumentError,
       );
     });
   });

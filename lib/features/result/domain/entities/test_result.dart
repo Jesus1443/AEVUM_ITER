@@ -1,4 +1,4 @@
-import '../../../test/domain/enums/riasec_type.dart';
+import '../../../test/domain/enums/riasec_dimension.dart';
 import '../../data/repositories/riasec_profile_repository.dart';
 import 'career_match.dart';
 import 'riasec_profile.dart';
@@ -13,17 +13,24 @@ class TestResult {
   final RiasecScores riasecScores;
   final List<CareerMatch> careerMatches;
 
-  CareerMatch get bestMatch => careerMatches.first;
+  CareerMatch get bestMatch {
+    if (careerMatches.isEmpty) {
+      throw StateError(
+        'No existen coincidencias de carreras en el resultado.',
+      );
+    }
 
-  List<CareerMatch> get topThreeCareers {
-    return careerMatches.take(3).toList();
+    return careerMatches.first;
   }
 
-  List<RiasecType> get dominantTypes {
-    return riasecScores.ranking
+  List<CareerMatch> get topThreeCareers {
+    return careerMatches
         .take(3)
-        .map((entry) => entry.key)
-        .toList();
+        .toList(growable: false);
+  }
+
+  List<RiasecDimension> get dominantTypes {
+    return riasecScores.topThreeDimensions;
   }
 
   List<RiasecProfile> get dominantProfiles {
@@ -31,14 +38,14 @@ class TestResult {
 
     return dominantTypes
         .map(repository.getProfile)
-        .toList();
+        .toList(growable: false);
   }
 
   RiasecProfile get mainProfile {
     const repository = RiasecProfileRepository();
 
     return repository.getProfile(
-      riasecScores.ranking.first.key,
+      riasecScores.dominantDimension,
     );
   }
 }

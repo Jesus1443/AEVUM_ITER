@@ -1,17 +1,19 @@
-import '../../../test/domain/enums/riasec_type.dart';
+import '../../../test/domain/enums/career.dart';
+import '../../../test/domain/enums/riasec_dimension.dart';
 
 class CareerProfile {
   const CareerProfile({
-    required this.id,
+    required this.career,
     required this.name,
-    required this.weights,
+    required this.description,
+    required this.dimensions,
   });
 
-  final String id;
-  final String name;
-  final Map<RiasecType, double> weights;
+  final Career career;
 
-  double weightOf(RiasecType type) {
-    return weights[type] ?? 0;
-  }
+  final String name;
+
+  final String description;
+
+  final List<RiasecDimension> dimensions;
 }

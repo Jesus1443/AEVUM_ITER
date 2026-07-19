@@ -1,5 +1,5 @@
 import '../../../test/domain/entities/test_question.dart';
-import '../../../test/domain/enums/riasec_type.dart';
+import '../../../test/domain/enums/riasec_dimension.dart';
 import '../../data/repositories/career_repository.dart';
 import '../entities/career_match.dart';
 import '../entities/career_profile.dart';
@@ -8,12 +8,12 @@ import '../entities/test_result.dart';
 
 class ResultCalculator {
   const ResultCalculator({
+    this.minimumAnswer = 0,
     this.maximumAnswer = 10,
-    this.questionsPerType = 5,
   });
 
+  final double minimumAnswer;
   final double maximumAnswer;
-  final int questionsPerType;
 
   TestResult calculate({
     required List<TestQuestion> questions,
@@ -28,6 +28,12 @@ class ResultCalculator {
     if (questions.isEmpty) {
       throw ArgumentError(
         'No se puede calcular un resultado sin preguntas.',
+      );
+    }
+
+    if (maximumAnswer <= minimumAnswer) {
+      throw ArgumentError(
+        'El valor máximo de respuesta debe ser mayor que el mínimo.',
       );
     }
 
@@ -48,47 +54,86 @@ class ResultCalculator {
     required List<TestQuestion> questions,
     required List<double> answers,
   }) {
-    final totals = <RiasecType, double>{
-      for (final type in RiasecType.values) type: 0,
+    final totals = <RiasecDimension, double>{
+      for (final dimension in RiasecDimension.values)
+        dimension: 0,
     };
 
-    final counts = <RiasecType, int>{
-      for (final type in RiasecType.values) type: 0,
+    final counts = <RiasecDimension, int>{
+      for (final dimension in RiasecDimension.values)
+        dimension: 0,
     };
 
     for (var index = 0; index < questions.length; index++) {
       final question = questions[index];
-      final answer = answers[index].clamp(0, maximumAnswer).toDouble();
+      final answer = answers[index];
 
-      totals[question.type] = totals[question.type]! + answer;
-      counts[question.type] = counts[question.type]! + 1;
-    }
-
-    final normalized = <RiasecType, double>{};
-
-    for (final type in RiasecType.values) {
-      final answeredForType = counts[type] ?? 0;
-
-      if (answeredForType == 0) {
-        normalized[type] = 0;
-        continue;
+      if (answer < minimumAnswer || answer > maximumAnswer) {
+        throw ArgumentError(
+          'La respuesta de la pregunta ${question.id} '
+          'debe estar entre $minimumAnswer y $maximumAnswer.',
+        );
       }
 
-      final maximumPossible = answeredForType * maximumAnswer;
-      final rawScore = totals[type] ?? 0;
+      totals[question.dimension] =
+          totals[question.dimension]! + answer;
 
-      normalized[type] = (rawScore / maximumPossible) * 100;
+      counts[question.dimension] =
+          counts[question.dimension]! + 1;
     }
 
+    final normalized = <RiasecDimension, double>{
+      for (final dimension in RiasecDimension.values)
+        dimension: _normalizeScore(
+          total: totals[dimension]!,
+          questionCount: counts[dimension]!,
+        ),
+    };
+
     return RiasecScores(
-      values: Map.unmodifiable(normalized),
+      realistic:
+          normalized[RiasecDimension.realistic] ?? 0,
+      investigative:
+          normalized[RiasecDimension.investigative] ?? 0,
+      artistic:
+          normalized[RiasecDimension.artistic] ?? 0,
+      social:
+          normalized[RiasecDimension.social] ?? 0,
+      enterprising:
+          normalized[RiasecDimension.enterprising] ?? 0,
+      conventional:
+          normalized[RiasecDimension.conventional] ?? 0,
     );
+  }
+
+  double _normalizeScore({
+    required double total,
+    required int questionCount,
+  }) {
+    if (questionCount == 0) {
+      return 0;
+    }
+
+    final minimumPossible =
+        questionCount * minimumAnswer;
+
+    final maximumPossible =
+        questionCount * maximumAnswer;
+
+    final normalized =
+        (total - minimumPossible) /
+        (maximumPossible - minimumPossible);
+
+    return (normalized * 100)
+        .clamp(0.0, 100.0)
+        .toDouble();
   }
 
   List<CareerMatch> _calculateCareerMatches(
     RiasecScores scores,
   ) {
-    final careers = const CareerRepository().getCareers();
+    final careers =
+        const CareerRepository().getCareers();
 
     final matches = careers.map((career) {
       return CareerMatch(
@@ -100,7 +145,8 @@ class ResultCalculator {
       );
     }).toList()
       ..sort(
-        (a, b) => b.compatibility.compareTo(a.compatibility),
+        (a, b) =>
+            b.compatibility.compareTo(a.compatibility),
       );
 
     return List.unmodifiable(matches);
@@ -110,18 +156,16 @@ class ResultCalculator {
     required RiasecScores scores,
     required CareerProfile career,
   }) {
-    var weightedScore = 0.0;
-    var totalWeight = 0.0;
-
-    for (final type in RiasecType.values) {
-      final weight = career.weightOf(type);
-
-      weightedScore += scores.scoreOf(type) * weight;
-      totalWeight += weight;
+    if (career.dimensions.isEmpty) {
+      return 0;
     }
 
-    if (totalWeight == 0) return 0;
+    var totalScore = 0.0;
 
-    return weightedScore / totalWeight;
+    for (final dimension in career.dimensions) {
+      totalScore += scores.getScore(dimension);
+    }
+
+    return totalScore / career.dimensions.length;
   }
 }

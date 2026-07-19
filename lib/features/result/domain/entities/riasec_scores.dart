@@ -1,62 +1,93 @@
-import '../../../test/domain/enums/riasec_type.dart';
-import '../enums/riasec_level.dart';
+import '../../../test/domain/enums/riasec_dimension.dart';
 
 class RiasecScores {
   const RiasecScores({
-    required this.values,
+    required this.realistic,
+    required this.investigative,
+    required this.artistic,
+    required this.social,
+    required this.enterprising,
+    required this.conventional,
   });
 
-  final Map<RiasecType, double> values;
+  final double realistic;
+  final double investigative;
+  final double artistic;
+  final double social;
+  final double enterprising;
+  final double conventional;
 
-  double scoreOf(RiasecType type) {
-    return values[type] ?? 0;
+  double getScore(RiasecDimension dimension) {
+    switch (dimension) {
+      case RiasecDimension.realistic:
+        return realistic;
+      case RiasecDimension.investigative:
+        return investigative;
+      case RiasecDimension.artistic:
+        return artistic;
+      case RiasecDimension.social:
+        return social;
+      case RiasecDimension.enterprising:
+        return enterprising;
+      case RiasecDimension.conventional:
+        return conventional;
+    }
   }
 
-  List<MapEntry<RiasecType, double>> get ranking {
-    final sorted = values.entries.toList()
-      ..sort((a, b) => b.value.compareTo(a.value));
-
-    return sorted;
-  }
-
-  List<RiasecType> get topThree {
-    return ranking.take(3).map((entry) => entry.key).toList();
-  }
-
-  String get hollandCode {
-    return topThree.map(_letterOf).join();
-  }
-
-  String _letterOf(RiasecType type) {
-    return switch (type) {
-      RiasecType.realistic => 'R',
-      RiasecType.investigative => 'I',
-      RiasecType.artistic => 'A',
-      RiasecType.social => 'S',
-      RiasecType.enterprising => 'E',
-      RiasecType.conventional => 'C',
+  Map<RiasecDimension, double> toMap() {
+    return {
+      RiasecDimension.realistic: realistic,
+      RiasecDimension.investigative: investigative,
+      RiasecDimension.artistic: artistic,
+      RiasecDimension.social: social,
+      RiasecDimension.enterprising: enterprising,
+      RiasecDimension.conventional: conventional,
     };
   }
 
-  RiasecLevel levelOf(RiasecType type) {
-    final value = scoreOf(type);
+  List<MapEntry<RiasecDimension, double>> get sortedScores {
+    final scores = toMap().entries.toList();
 
-    if (value >= 90) {
-      return RiasecLevel.veryHigh;
+    scores.sort(
+      (a, b) => b.value.compareTo(a.value),
+    );
+
+    return List.unmodifiable(scores);
+  }
+
+  RiasecDimension get dominantDimension {
+    return sortedScores.first.key;
+  }
+
+  List<RiasecDimension> get topThreeDimensions {
+    return sortedScores
+        .take(3)
+        .map((entry) => entry.key)
+        .toList(growable: false);
+  }
+
+  String get hollandCode {
+    return topThreeDimensions
+        .map(_letterForDimension)
+        .join();
+  }
+
+  String _letterForDimension(
+    RiasecDimension dimension,
+  ) {
+    switch (dimension) {
+      case RiasecDimension.realistic:
+        return 'R';
+      case RiasecDimension.investigative:
+        return 'I';
+      case RiasecDimension.artistic:
+        return 'A';
+      case RiasecDimension.social:
+        return 'S';
+      case RiasecDimension.enterprising:
+        return 'E';
+      case RiasecDimension.conventional:
+        return 'C';
     }
-
-    if (value >= 75) {
-      return RiasecLevel.high;
-    }
-
-    if (value >= 60) {
-      return RiasecLevel.moderate;
-    }
-
-    if (value >= 40) {
-      return RiasecLevel.low;
-    }
-
-    return RiasecLevel.veryLow;
   }
 }
