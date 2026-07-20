@@ -1,15 +1,17 @@
-//import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../features/result/presentation/pages/result_page.dart';
-import '../../features/test/presentation/pages/test_page.dart';
-import '../../features/path/presentation/pages/path_page.dart';
-import '../../features/avatar/presentation/pages/avatar_selection_page.dart';
 import '../../features/avatar/presentation/pages/avatar_name_page.dart';
+import '../../features/avatar/presentation/pages/avatar_selection_page.dart';
 import '../../features/onboarding/presentation/pages/onboarding_page.dart';
+import '../../features/path/presentation/pages/path_page.dart';
+import '../../features/profile/presentation/pages/edit_profile_page.dart';
+import '../../features/profile/presentation/pages/profile_page.dart';
+import '../../features/result/presentation/pages/result_page.dart';
 import '../../features/splash/presentation/pages/splash_page.dart';
+import '../../features/test/presentation/pages/test_page.dart';
 import 'app_routes.dart';
 
+/// Configuración central de navegación de la aplicación.
 class AppRouter {
   AppRouter._();
 
@@ -28,14 +30,14 @@ class AppRouter {
         path: AppRoutes.avatarSelection,
         builder: (context, state) => const AvatarSelectionPage(),
       ),
-      GoRoute(  
+      GoRoute(
         path: AppRoutes.avatarName,
         builder: (context, state) => const AvatarNamePage(),
       ),
       GoRoute(
         path: AppRoutes.test,
         builder: (context, state) => const TestPage(),
-        ),
+      ),
       GoRoute(
         path: AppRoutes.path,
         builder: (context, state) => const PathPage(),
@@ -43,6 +45,14 @@ class AppRouter {
       GoRoute(
         path: AppRoutes.result,
         builder: (context, state) => const ResultPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.profile,
+        builder: (context, state) => const ProfilePage(),
+      ),
+      GoRoute(
+        path: AppRoutes.editProfile,
+        builder: (context, state) => const EditProfilePage(),
       ),
     ],
   );

@@ -93,12 +93,12 @@ void main() {
 
     test('calcula correctamente los porcentajes RIASEC', () {
       final answers = [
-        ...List.filled(5, 5.0),
+        ...List.filled(5, 10.0),
+        ...List.filled(5, 8.0),
+        ...List.filled(5, 6.0),
         ...List.filled(5, 4.0),
-        ...List.filled(5, 3.0),
         ...List.filled(5, 2.0),
-        ...List.filled(5, 1.0),
-        ...List.filled(5, 1.0),
+        ...List.filled(5, 0.0),
       ];
 
       final result = calculator.calculate(
@@ -151,12 +151,12 @@ void main() {
 
     test('genera correctamente el código Holland', () {
       final answers = [
-        ...List.filled(5, 5.0),
+        ...List.filled(5, 10.0),
+        ...List.filled(5, 8.0),
+        ...List.filled(5, 6.0),
         ...List.filled(5, 4.0),
-        ...List.filled(5, 3.0),
         ...List.filled(5, 2.0),
-        ...List.filled(5, 1.0),
-        ...List.filled(5, 1.0),
+        ...List.filled(5, 0.0),
       ];
 
       final result = calculator.calculate(
@@ -172,12 +172,12 @@ void main() {
 
     test('ordena correctamente el ranking RIASEC', () {
       final answers = [
-        ...List.filled(5, 5.0),
+        ...List.filled(5, 10.0),
+        ...List.filled(5, 8.0),
+        ...List.filled(5, 6.0),
         ...List.filled(5, 4.0),
-        ...List.filled(5, 3.0),
         ...List.filled(5, 2.0),
-        ...List.filled(5, 1.0),
-        ...List.filled(5, 1.0),
+        ...List.filled(5, 0.0),
       ];
 
       final result = calculator.calculate(
@@ -204,7 +204,7 @@ void main() {
     });
 
     test('las carreras se ordenan por compatibilidad', () {
-      final answers = List.filled(30, 5.0);
+      final answers = List.filled(30, 10.0);
 
       final result = calculator.calculate(
         questions: questions,
@@ -239,8 +239,8 @@ void main() {
     );
 
     test('lanza excepción si una respuesta supera el máximo', () {
-      final answers = List.filled(30, 5.0);
-      answers[0] = 6.0;
+      final answers = List.filled(30, 10.0);
+      answers[0] = 11.0;
 
       expect(
         () => calculator.calculate(
@@ -252,8 +252,8 @@ void main() {
     });
 
     test('lanza excepción si una respuesta es menor al mínimo', () {
-      final answers = List.filled(30, 5.0);
-      answers[0] = 0.0;
+      final answers = List.filled(30, 10.0);
+      answers[0] = -1.0;
 
       expect(
         () => calculator.calculate(

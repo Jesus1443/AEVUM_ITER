@@ -1,42 +1,19 @@
-import 'dart:convert';
-
-import 'package:shared_preferences/shared_preferences.dart';
-
+import '../../../../core/database/app_database.dart';
 import '../../domain/entities/user_profile.dart';
+import '../../domain/repositories/profile_repository.dart';
+import '../repositories/profile_repository_impl.dart';
 
+/// Fachada de compatibilidad para el código que antes usaba SharedPreferences.
+///
+/// Ahora todas las operaciones se delegan a SQLite.
 class ProfileLocalStorage {
-  static const _profileKey = 'user_profile';
+  ProfileLocalStorage({ProfileRepository? repository})
+      : _repository = repository ??
+            ProfileRepositoryImpl(AppDatabase.instance);
 
-  Future<void> save(UserProfile profile) async {
-    final prefs = await SharedPreferences.getInstance();
+  final ProfileRepository _repository;
 
-    await prefs.setString(
-      _profileKey,
-      jsonEncode({
-        'name': profile.name,
-        'avatarId': profile.avatarId,
-      }),
-    );
-  }
-
-  Future<UserProfile?> load() async {
-    final prefs = await SharedPreferences.getInstance();
-
-    final json = prefs.getString(_profileKey);
-
-    if (json == null) return null;
-
-    final map = jsonDecode(json);
-
-    return UserProfile(
-      name: map['name'],
-      avatarId: map['avatarId'],
-    );
-  }
-
-  Future<void> clear() async {
-    final prefs = await SharedPreferences.getInstance();
-
-    await prefs.remove(_profileKey);
-  }
+  Future<void> save(UserProfile profile) => _repository.saveProfile(profile);
+  Future<UserProfile?> load() => _repository.getProfile();
+  Future<void> clear() => _repository.deleteProfile();
 }

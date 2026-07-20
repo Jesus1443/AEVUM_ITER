@@ -6,6 +6,7 @@ import '../../../../app/routes/app_routes.dart';
 import '../../../../app/theme/app_colors.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../../../profile/presentation/providers/user_profile_provider.dart';
 import '../../../test/presentation/providers/test_provider.dart';
 import '../widgets/best_career_card.dart';
 import '../widgets/career_ranking_card.dart';
@@ -16,11 +17,18 @@ import '../widgets/riasec_scores_card.dart';
 import '../widgets/strengths_card.dart';
 import '../widgets/riasec_radar_card.dart';
 
-class ResultPage extends ConsumerWidget {
+class ResultPage extends ConsumerStatefulWidget {
   const ResultPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ResultPage> createState() => _ResultPageState();
+}
+
+class _ResultPageState extends ConsumerState<ResultPage> {
+  bool _resultSaved = false;
+
+  @override
+  Widget build(BuildContext context) {
     final testState = ref.watch(testProvider);
     final result = testState.result;
 
@@ -56,6 +64,16 @@ class ResultPage extends ConsumerWidget {
             ),
           ),
         ),
+      );
+    }
+
+    // El resultado se persiste una sola vez cuando la pantalla lo recibe.
+    if (!_resultSaved) {
+      _resultSaved = true;
+      Future<void>.microtask(
+        () => ref
+            .read(userProfileProvider.notifier)
+            .saveLatestResult(result),
       );
     }
 

@@ -1,3 +1,4 @@
+/// Nombres centralizados de todas las rutas de la aplicación.
 class AppRoutes {
   AppRoutes._();
 
@@ -9,5 +10,6 @@ class AppRoutes {
   static const String test = '/test';
   static const String result = '/result';
   static const String profile = '/profile';
+  static const String editProfile = '/profile/edit';
   static const String settings = '/settings';
 }

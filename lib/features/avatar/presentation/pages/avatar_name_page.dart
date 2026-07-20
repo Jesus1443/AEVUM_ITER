@@ -20,27 +20,33 @@ class AvatarNamePage extends ConsumerStatefulWidget {
 
 class _AvatarNamePageState extends ConsumerState<AvatarNamePage> {
   final TextEditingController _nameController = TextEditingController();
-  bool _hasName = false;
+  final TextEditingController _ageController = TextEditingController();
+  bool _canContinue = false;
 
   @override
   void initState() {
     super.initState();
 
-    _nameController.addListener(() {
-      final hasName = _nameController.text.trim().isNotEmpty;
-
-      if (hasName != _hasName) {
-        setState(() {
-          _hasName = hasName;
-        });
-      }
-    });
+    _nameController.addListener(_validateForm);
+    _ageController.addListener(_validateForm);
   }
 
   @override
   void dispose() {
     _nameController.dispose();
+    _ageController.dispose();
     super.dispose();
+  }
+
+  void _validateForm() {
+    final nameIsValid = _nameController.text.trim().isNotEmpty;
+    final age = int.tryParse(_ageController.text.trim());
+    final ageIsValid = age != null && age >= 10 && age <= 100;
+    final canContinue = nameIsValid && ageIsValid;
+
+    if (canContinue != _canContinue) {
+      setState(() => _canContinue = canContinue);
+    }
   }
 
   @override
@@ -155,10 +161,48 @@ class _AvatarNamePageState extends ConsumerState<AvatarNamePage> {
 
                   TextField(
                     controller: _nameController,
-                    textInputAction: TextInputAction.done,
+                    textInputAction: TextInputAction.next,
                     decoration: InputDecoration(
                       hintText: 'Escribe tu nombre aquí...',
                       prefixIcon: const Icon(Icons.person_outline_rounded),
+                      filled: true,
+                      fillColor:
+                          AppColors.surfaceLight.withValues(alpha: 0.65),
+                      border: OutlineInputBorder(
+                        borderRadius:
+                            BorderRadius.circular(AppRadius.circular),
+                        borderSide: BorderSide.none,
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.lg,
+                        vertical: AppSpacing.lg,
+                      ),
+                    ),
+                  ),
+
+
+
+                  const SizedBox(height: AppSpacing.lg),
+
+                  const Text(
+                    'TU EDAD',
+                    style: TextStyle(
+                      color: AppColors.primaryDark,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 1.4,
+                      fontSize: 16,
+                    ),
+                  ),
+
+                  const SizedBox(height: AppSpacing.md),
+
+                  TextField(
+                    controller: _ageController,
+                    keyboardType: TextInputType.number,
+                    textInputAction: TextInputAction.done,
+                    decoration: InputDecoration(
+                      hintText: 'Escribe tu edad...',
+                      prefixIcon: const Icon(Icons.cake_outlined),
                       filled: true,
                       fillColor:
                           AppColors.surfaceLight.withValues(alpha: 0.65),
@@ -179,13 +223,16 @@ class _AvatarNamePageState extends ConsumerState<AvatarNamePage> {
                   PrimaryButton(
                     text: '¡Empezar test!',
                     icon: Icons.arrow_forward_rounded,
-                    onPressed: _hasName
+                    onPressed: _canContinue
                         ? () async {
                             final name = _nameController.text.trim();
+                            final age = int.parse(_ageController.text.trim());
 
                             await ref.read(userProfileProvider.notifier).saveProfile(
                                   UserProfile(
+                                    id: 1,
                                     name: name,
+                                    age: age,
                                     avatarId: avatar.id,
                                   ),
                                 );
